@@ -2,8 +2,8 @@ require("dotenv").config();
 
 var fs = require('fs');
 const puppeteer = require('puppeteer');
-const Discord = require('discord.js');
-const client = new Discord.Client();
+//const Discord = require('discord.js');
+//const client = new Discord.Client();
 const axios = require('axios');
 const date = new Date();
 const queue = new Map();
@@ -15,6 +15,8 @@ const weatherAPPKey = process.env.API_TOKEN_KEY;
 const yttl = require('ytdl-core');
 const YTSearcher = require('ytsearcher');
 const prefix = "!";
+const ffmpegStatic = require('ffmpeg-static');
+
 //Twitter API Stuff
 /** Twitter stuff turned off 2/11/2025 for repair 
 var Twit = require('twit');
@@ -27,6 +29,63 @@ var T = new Twit({
 })
   */
 //Arrays 
+/*
+const { createAudioPlayer, NoSubscriberBehavior } = require('@discordjs/voice');
+const { createAudioResource } = require('@discordjs/voice');
+const { joinVoiceChannel } = require('@discordjs/voice');
+const connection = joinVoiceChannel({
+    channelId: channelOneID,
+    guildId: channel.guild.id,
+    adapterCreator: channel.guild.voiceAdapterCreator,
+});
+const player = createAudioPlayer({
+    behaviors: {
+        noSubscriber: NoSubscriberBehavior.Pause,
+    },
+});
+const resource = createAudioResource('C:\Users\Andrew\Documents\GitHub\DiscordBot\sounds\balls.mp3');
+player.play(resource);
+player.stop();
+
+//const { Client, GatewayIntentBits } = require('discord.js');
+const { joinVoiceChannel, createAudioPlayer, createAudioResource, AudioPlayerStatus, generateDependencyReport } = require('@discordjs/voice');
+const { Intents } = require("discord.js");
+const ffmpegStatic = require('ffmpeg-static'); // Required for playback
+
+// Log the dependency report to ensure everything is set up correctly
+console.log(generateDependencyReport());
+
+const client = new Client({
+    intents: [
+        GatewayIntentBits.Guilds,
+		GatewayIntentBits.GuildMessages,
+		GatewayIntentBits.MessageContent,
+		GatewayIntentBits.GuildMembers, 
+    ]
+}); */
+//const ffmpegStatic = require('ffmpeg-static');
+//const { Client, IntentsBitField } = require('discord.js');
+//const { Intents } = require("discord.js");
+//const myIntents = new IntentsBitField();
+//myIntents.add(IntentsBitField.Flags.GuildPresences, IntentsBitField.Flags.GuildMembers);
+
+//const client = new Client({ intents: myIntents });
+
+//Client.Intents.all();
+//const client = new Discord.Client({ intents: ['GUILD_VOICE_STATES', 'GUILD_MESSAGES', 'GUILDS'] });
+
+const { Client, GatewayIntentBits } = require('discord.js');
+console.log(Client)
+console.log(GatewayIntentBits)
+const client = new Client({ 
+    intents: [
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildVoiceStates,
+    ], 
+});
+Client.Intents.all();
+console.log(generateDependencyReport());
+
 const eightBallArray = [
     "As I see it, yes.",
     "Ask again later.",
@@ -261,18 +320,42 @@ function eightBall(message){
     message.reply(eightBallArray[randomNumber])
     message.react("🎱")
 }
+//const connection = message.channel.join()
+// TypeError: connection.playFile is not a function
+//const dispatcher = connection.playFile('./music.mp3')
+
+//const dispatcher2 = connection.play('./music.mp3')
+
 function playSong(songName, message){
     // Checking if the message author is in a voice channel.
+    console.log(songName)
+    console.log(message)
     if (!message.member.voice.channel) 
         return message.reply("You must be in a voice channel.");
     // Checking if the bot is in a voice channel.
     if (message.guild.me.voice.channel) 
         return message.reply("I'm already playing.");
-    // Joining the channel and creating a VoiceConnection.
-    message.member.voice.channel.join().then(VoiceConnection => {
+    // Joining the channel and creating a connection.
+    //const connection = message.member.voice.channel.join();
+    const connection = joinVoiceChannel({
+        channelId: voiceChannel.id,
+        guildId: voiceChannel.guild.id,
+        adapterCreator: voiceChannel.guild.voiceAdapterCreator,
+        selfDeaf: false
+        });
+    console.log("       connection            ")
+    console.log(connection)
+    console.log("  client                 ")
+    console.log(client)
+    console.log("      client            ")
+    const subscription = connection.subscribe(audioPlayer);
+    
+    message.member.voice.channel.join().then(connection => {
         // Playing the music, and, on finish, disconnecting the bot.
-        VoiceConnection.play(songName).on("finish", () => 
-            VoiceConnection.disconnect());
+        connection.play("sounds/balls.mp3").on("finish", () => 
+            connection.disconnect());
+            console.log(connection);
+            console.log(songName);
             message.reply("Playing...");
     }).catch(err => 
         console.log(err))
@@ -373,10 +456,10 @@ function giveWeather(message){//add the error log
 }
 function disconnectBot(message){
     const empty = "";
-    message.member.voice.channel.join().then(VoiceConnection => {
+    message.member.voice.channel.join().then(connection => {
         // Playing the music, and, on finish, disconnecting the bot.
-        VoiceConnection.play(empty).on("finish", () => 
-            VoiceConnection.disconnect());
+        connection.play(empty).on("finish", () => 
+            connection.disconnect());
             message.reply("Stopping...");
     }).catch(err => 
         console.log(err))
