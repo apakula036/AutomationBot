@@ -16,7 +16,7 @@ const yttl = require('ytdl-core');
 const YTSearcher = require('ytsearcher');
 const prefix = "!";
 const ffmpegStatic = require('ffmpeg-static');
-
+console.log("constants are ready");
 //Twitter API Stuff
 /** Twitter stuff turned off 2/11/2025 for repair 
 var Twit = require('twit');
@@ -48,7 +48,7 @@ player.play(resource);
 player.stop();
 
 //const { Client, GatewayIntentBits } = require('discord.js');
-const { joinVoiceChannel, createAudioPlayer, createAudioResource, AudioPlayerStatus, generateDependencyReport } = require('@discordjs/voice');
+const { joinVoiceChannel, createAudioPlayer, createAudioResource, AudioPlayerStatus } = require('@discordjs/voice');
 const { Intents } = require("discord.js");
 const ffmpegStatic = require('ffmpeg-static'); // Required for playback
 
@@ -75,16 +75,38 @@ const client = new Client({
 //const client = new Discord.Client({ intents: ['GUILD_VOICE_STATES', 'GUILD_MESSAGES', 'GUILDS'] });
 
 const { Client, GatewayIntentBits } = require('discord.js');
-console.log(Client)
-console.log(GatewayIntentBits)
-const client = new Client({ 
+console.log("first constnat ");
+const { 
+    joinVoiceChannel, 
+    createAudioPlayer, 
+    createAudioResource, 
+    AudioPlayerStatus 
+} = require('@discordjs/voice');
+const path = require('path');
+
+// Initialize the Discord client with necessary intents
+const client = new Client({
+    intents: [
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.MessageContent,
+        GatewayIntentBits.GuildVoiceStates // Required to interact with voice channels
+    ]
+});
+//console.log("Client: ", client);
+//console.log("GatewayIntentBits", GatewayIntentBits);
+// Commenting out old client method?
+/*
+const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
         GatewayIntentBits.GuildVoiceStates,
     ], 
 });
-Client.Intents.all();
-console.log(generateDependencyReport());
+*/
+
+//Client.Intents.all();
+//console.log(generateDependencyReport());
 
 const eightBallArray = [
     "As I see it, yes.",
@@ -163,15 +185,18 @@ const shortSoundArray = [
 ];
 var i;
 //Start bot and run these functions
-client.on('ready', () => {
-    //client.channels.cache.get(channelTwoID).send('Im Ready!');
+client.once('ready', () => {
+    client.channels.cache.get(channelTwoID).send('Im Ready!');
     console.log("im ready")
     //checkTimeFunc();
     //greetings();
     //autoCheckRocketLeague();
-})
+});
+
+
 //Giant if else statement taking message from user and breaking it down to do the correct function also tests if the sender is a bot, if so, do nothing.
-client.on('message', message => {
+client.on('messageCreate', (message) => {
+    //console.log("message:", message.author, message.content );
     if (!message.content.startsWith(prefix) || message.author.bot) return;
     const args = message.content.slice().trim().split(/ +/g);
     const theCommand = args.shift().toLowerCase();
@@ -214,7 +239,7 @@ client.on('message', message => {
     } else if (theCommand == "!balls") {
         playSong("sounds/balls.mp3", message)
         ballsCounter()
-    } else if (theCommand == "!ballcounter"){
+    }else if ((theCommand == "!ballchecker") || (theCommand == "!ballschecker") || (theCommand == "!checkballscounter")) {
         ballChecker(message)
     } else if (theCommand == "!chunky") {
         playSong("sounds/chunky.mp3", message)
@@ -327,39 +352,45 @@ function eightBall(message){
 //const dispatcher2 = connection.play('./music.mp3')
 
 function playSong(songName, message){
-    // Checking if the message author is in a voice channel.
-    console.log(songName)
-    console.log(message)
+    console.log("Song name: ", songName);
+    //console.log(message)
+    console.log(message.guild);
+    console.log(message.guild.me);
+    //console.log(message.guild.me.voice);
+    //console.log(message.guild.me.voice.channel);
+    
     if (!message.member.voice.channel) 
         return message.reply("You must be in a voice channel.");
-    // Checking if the bot is in a voice channel.
-    if (message.guild.me.voice.channel) 
-        return message.reply("I'm already playing.");
-    // Joining the channel and creating a connection.
-    //const connection = message.member.voice.channel.join();
+    
+    //if (message.guild.me.voice.channel) 
+    //    return message.reply("I'm already playing.");
+    
+    const voiceChannel = message.member.voice.channel;
+    
     const connection = joinVoiceChannel({
         channelId: voiceChannel.id,
         guildId: voiceChannel.guild.id,
         adapterCreator: voiceChannel.guild.voiceAdapterCreator,
         selfDeaf: false
-        });
-    console.log("       connection            ")
-    console.log(connection)
-    console.log("  client                 ")
-    console.log(client)
-    console.log("      client            ")
-    const subscription = connection.subscribe(audioPlayer);
+    });
     
-    message.member.voice.channel.join().then(connection => {
-        // Playing the music, and, on finish, disconnecting the bot.
-        connection.play("sounds/balls.mp3").on("finish", () => 
-            connection.disconnect());
-            console.log(connection);
-            console.log(songName);
-            message.reply("Playing...");
-    }).catch(err => 
-        console.log(err))
+    const player = createAudioPlayer();
+    const resource = createAudioResource(songName);
+    
+    player.play(resource);
+    connection.subscribe(player);
+    
+    player.on(AudioPlayerStatus.Idle, () => {
+        connection.destroy();
+    });
+    
+    player.on('error', error => {
+        console.error('Player error:', error);
+    });
+    
+    message.reply("Playing...");
 };
+
 function dadBot(message){
     const args = message.content.slice().trim().split(/ +/g);
         const theCommand = args.shift();
@@ -613,10 +644,15 @@ function saveToTextFile(theMessage){
 }
 function ballsCounter(){
     fs.readFile('ballsCounter.txt', function(err, data) {
-        console.log("this is a test to see what its at " + data++)
+        console.log("adding 1 more to the balls counter", data)
+        //newData = parseString(data);
+        //console.log(newData);
+
+        data = parseInt(data) + 1;
         console.log(data)
-        newData = parseInt(data) 
-        fs.writeFile('ballsCounter.txt', newData, function (err) {
+        data = data.toString()
+        console.log(data)
+        fs.writeFile('ballsCounter.txt', data, 'utf8', function (err) {
             if (err) throw err;
             console.log('Saved!');
         })
@@ -624,7 +660,7 @@ function ballsCounter(){
 }
 function ballChecker(message){
     fs.readFile('ballsCounter.txt', function(err, data) {
-        console.log(data);
+        //console.log("value of data in the ballchecker function: ", data);
         message.reply("The counter is at: " + data)
         return data; 
     });
