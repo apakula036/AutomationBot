@@ -177,6 +177,12 @@ client.on('messageCreate', (message) => {
         playSong("sounds/kingdomhearts.mp3", message)
     } else if (theCommand == "!graduation") {
         playSong("sounds/graduation.mp4", message)
+    } else if (message.content.startsWith("!addpoints")) {
+        addPoints(message);
+    } else if (theCommand == "!checkpoints") {
+        checkPoints(message);
+    } else if (theCommand == "!slotmachine") {
+        slotMachine(message);
     }
 });
 //Dad bot functionality here seperate can probably get rid of these needs test 
@@ -205,12 +211,6 @@ function eightBall(message){
     message.reply(eightBallArray[randomNumber])
     message.react("🎱")
 }
-//const connection = message.channel.join()
-// TypeError: connection.playFile is not a function
-//const dispatcher = connection.playFile('./music.mp3')
-
-//const dispatcher2 = connection.play('./music.mp3')
-
 function playSong(songName, message){
     console.log("Song name: ", songName);
     //console.log(message)
@@ -290,14 +290,14 @@ function temperatureSports(message){
 }
 function flipACoin(message){
     const randomNumber = Math.floor(Math.random() * 2);
-    const heads = new AttachmentBuilder('./coinImages/coin_Heads.jpg');
+    const heads = new AttachmentBuilder('./images/coin_Heads.jpg');
     if(randomNumber == 1){
         message.channel.send({ 
             content: 'heads!', 
             files: [heads] 
         });
     } else {
-        const tails = new AttachmentBuilder('./coinImages/coin_tails.jpg');
+        const tails = new AttachmentBuilder('./images/coin_tails.jpg');
         console.log(tails.attachment);
         message.channel.send({ 
             content: 'Tails!', 
@@ -306,7 +306,7 @@ function flipACoin(message){
     }
 }
 function giveTextFile(message){
-    const textFile = new AttachmentBuilder('./testfile.txt');
+    const textFile = new AttachmentBuilder('./textfiles/testfile.txt');
     message.channel.send({ 
         content: "Here is the text file you requested, it has all of the notes that have been saved to the bot so far. If you want to add more notes, use the command !noteThis 'your note here' and it will be added to the file. If you want to see a random note, use the command !randomNote and it will give you one of the notes from the file.", 
         files: [textFile] 
@@ -424,25 +424,25 @@ function makeTweets(theTweet){
     })
 }
 function saveTweetID(tweetID, theTweet){
-    fs.appendFile('mynewfile1.txt', "\r\n", function (err) {
+    fs.appendFile('./textfiles/mynewfile1.txt', "\r\n", function (err) {
         if (err) throw err;
       });
-    fs.appendFile('mynewfile1.txt', tweetID +"_"+ theTweet, function (err) {
+    fs.appendFile('./textfiles/mynewfile1.txt', tweetID +"_"+ theTweet, function (err) {
         if (err) throw err;
         console.log('Saved ' + theTweet);
       });
 }function saveTweetNoID(theTweet){
-    fs.appendFile('tweetsnoids.txt', "\r\n", function (err) {
+    fs.appendFile('./textfiles/tweetsnoids.txt', "\r\n", function (err) {
         if (err) throw err;
       });
-    fs.appendFile('tweetsnoids.txt', theTweet + "_" , function (err) {
+    fs.appendFile('./textfiles/tweetsnoids.txt', theTweet + "_" , function (err) {
         if (err) throw err;
         console.log('Saved ' + theTweet + " to file tweetsNoIDs.txt");
       });
 }
 function readRandomTweet(){
-    fs.stat('tweetsnoids.txt', function (error, stats) { 
-        fs.open('tweetsnoids.txt', "r", function (error, fd) { 
+    fs.stat('./textfiles/tweetsnoids.txt', function (error, stats) { 
+        fs.open('./textfiles/tweetsnoids.txt', "r", function (error, fd) { 
             var buffer = new Buffer.alloc(stats.size); 
             fs.read(fd, buffer, 0, buffer.length, 
                 null, function (error, bytesRead, buffer) { 
@@ -459,8 +459,8 @@ function readRandomTweet(){
     });
 }
 function readAllTweets(){//could error out after a lot of tweets, be weary itll need to be fixed maybe at some point 
-    fs.stat('tweetsnoids.txt', function (error, stats) { 
-        fs.open('tweetsnoids.txt', "r", function (error, fd) { 
+    fs.stat('./textfiles/tweetsnoids.txt', function (error, stats) { 
+        fs.open('./textfiles/tweetsnoids.txt', "r", function (error, fd) { 
             var buffer = new Buffer.alloc(stats.size); 
             fs.read(fd, buffer, 0, buffer.length, 
                 null, function (error, bytesRead, buffer) { 
@@ -472,8 +472,8 @@ function readAllTweets(){//could error out after a lot of tweets, be weary itll 
     });
 }
 function readAllNotes(message){
-    fs.stat('newFile2.txt', function (error, stats) { 
-        fs.open('newFile2.txt', "r", function (error, fd) { 
+    fs.stat('./textfiles/newFile2.txt', function (error, stats) { 
+        fs.open('./textfiles/newFile2.txt', "r", function (error, fd) { 
             var buffer = new Buffer.alloc(stats.size); 
             fs.read(fd, buffer, 0, buffer.length, 
                 null, function (error, bytesRead, buffer) { 
@@ -488,8 +488,8 @@ function readAllNotes(message){
     });
 }
 function randomNote(message){
-    fs.stat('testfile.txt', function (error, stats) { 
-        fs.open('testfile.txt', "r", function (error, fd) { 
+    fs.stat('./textfiles/testfile.txt', function (error, stats) { 
+        fs.open('./textfiles/testfile.txt', "r", function (error, fd) { 
             var buffer = new Buffer.alloc(stats.size); 
             fs.read(fd, buffer, 0, buffer.length, 
                 null, function (error, bytesRead, buffer) { 
@@ -515,14 +515,14 @@ function randomBetween(message){
     }
 }
 function saveToTextFile(theMessage){
-    fs.appendFile('newFile2.txt', theMessage, function (err) {
+    fs.appendFile('./textfiles/newFile2.txt', theMessage, function (err) {
         if (err) throw err;
         console.log(theMessage)
         console.log('Saved!');
     })
 }
 function ballsCounter(){
-    fs.readFile('ballsCounter.txt', function(err, data) {
+    fs.readFile('./textfiles/ballsCounter.txt', function(err, data) {
         console.log("adding 1 more to the balls counter", data)
         //newData = parseString(data);
         //console.log(newData);
@@ -531,21 +531,21 @@ function ballsCounter(){
         console.log(data)
         data = data.toString()
         console.log(data)
-        fs.writeFile('ballsCounter.txt', data, 'utf8', function (err) {
+        fs.writeFile('./textfiles/ballsCounter.txt', data, 'utf8', function (err) {
             if (err) throw err;
             console.log('Saved!');
         })
     });
 }
 function ballChecker(message){
-    fs.readFile('ballsCounter.txt', function(err, data) {
+    fs.readFile('./textfiles/ballsCounter.txt', function(err, data) {
         //console.log("value of data in the ballchecker function: ", data);
         message.reply("The counter is at: " + data)
         return data; 
     });
 }
 function addToTextFile(message){
-    fs.appendFile('Dad_and_Ping.txt', "Ping bot triggered by " + message.author.username + " with message: " + message.content + "\n", function (err) {
+    fs.appendFile('./textfiles/Dad_and_Ping.txt', "Dad bot triggered by " + message.author.username + " with message: " + message.content + "\n", function (err) {
         if (err) throw err;
     });
 }
@@ -661,7 +661,7 @@ async function scrapeThirdAndFourth(url, message){// can i condense this? need t
     await page.goto(url, {waitUntil: [
         'load',
         'domcontentloaded',
-      ]});
+    ]});
     page.waitForTimeout(120000);
     await page.screenshot({path: 'testing.png'});//auto delete this after sending 
     message.reply("Heres what I grabbed! ", {
@@ -835,5 +835,114 @@ function githubQR(message){
             files: [qrcode] 
         });
 }
+//function that will allow users to check the current point totals 
+function checkPoints(message){
+    console.log("check points function called");
+    //Read the text file 
+    fs.readFile('./textfiles/pointsFileBeef.txt', function(err, points) {
+        console.log("Points: " + points)
+        message.reply("Beef currently has " + points + " points!")
+    });
+    fs.readFile('./textfiles/pointsFilePakoola.txt', function(err, points) {
+        console.log("Points: " + points)
+        message.reply("Pakoola currently has " + points + " points!")
+    });
+    fs.readFile('./textfiles/pointsFileDafarmer.txt', function(err, points) {
+        console.log("Points: " + points)
+        message.reply("Dafarmer currently has " + points + " points!")
+    });
+    fs.readFile('./textfiles/pointsFileRabid.txt', function(err, points) {
+        console.log("Points: " + points)
+        message.reply("Rabid currently has " + points + " points!")
+    });
+}
+//function that will add points when called, will be used in games and other point based activities
+function addPoints(message){
+    //slice the message then trim it and split it into an array based on spaces
+    const incomingPoints = message.content.slice().trim().split(/ +/g);
+    console.log("User: " + message.author.username);
+    console.log("This is the points being added: " + incomingPoints[1]);
+    //check the username of the person calling the command and add points to their total based on the text file associated with them
+    if (message.author.username == meatybeef) {
+        //Read the text file 
+        fs.readFile('./textfiles/pointsFileBeef.txt', function(err, data) {
+            console.log("Parsing message? " + incomingPoints)
+            console.log("adding " + incomingPoints[1] + " more to the points total for user: " + message.author.username + " Current points: " + data)
+            //make data an int and add the points being added to it, then convert it back to a string and write it to the text file
+            data = parseInt(data) + parseInt(incomingPoints[1]);
+            console.log(data)
+            data = data.toString()
+            message.reply("Adding " + incomingPoints[1] + " more points to your total!"+ " New total: " + data)
+            fs.writeFile('./textfiles/pointsFileBeef.txt', data, 'utf8', function (err) {
+                if (err) throw err;
+                console.log('Saved!');
+            })
+        });
+    } else if (message.author.username == pakoola) {
+        fs.readFile('./textfiles/pointsFilePakoola.txt', function(err, data) {
+            console.log("Parsing message? " + incomingPoints)
+            console.log("adding " + incomingPoints[1] + " more to the points total for user: " + message.author.username + " Current points: " + data)
+            data = parseInt(data) + parseInt(incomingPoints[1]);
+            console.log(data)
+            data = data.toString()
+            message.reply("Adding " + incomingPoints[1] + " more points to your total!"+ " New total: " + data)
+            fs.writeFile('./textfiles/pointsFilePakoola.txt', data, 'utf8', function (err) {
+                if (err) throw err;
+                console.log('Saved!');
+            })
+        });
+    } else if (message.author.username == dafarmer) {
+        fs.readFile('./textfiles/pointsFileDafarmer.txt', function(err, data) {
+            console.log("Parsing message? " + incomingPoints)
+            console.log("adding " + incomingPoints[1] + " more to the points total for user: " + message.author.username + " Current points: " + data)
+            data = parseInt(data) + parseInt(incomingPoints[1]);
+            console.log(data)
+            data = data.toString()
+            message.reply("Adding " + incomingPoints[1] + " more points to your total!"+ " New total: " + data)
+            fs.writeFile('./textfiles/pointsFileDafarmer.txt', data, 'utf8', function (err) {
+                if (err) throw err;
+                console.log('Saved!');
+            })
+        });
+    } else if (message.author.username == rabidchihuahuas) {
+        fs.readFile('./textfiles/pointsFileRabid.txt', function(err, data) {
+            console.log("Parsing message? " + incomingPoints)
+            console.log("adding " + incomingPoints[1] + " more to the points total for user: " + message.author.username + " Current points: " + data)
+            data = parseInt(data) + parseInt(incomingPoints[1]);
+            console.log(data)
+            data = data.toString()
+            message.reply("Adding " + incomingPoints[1] + " more points to your total!"+ " New total: " + data)
+            fs.writeFile('./textfiles/pointsFileRabid.txt', data, 'utf8', function (err) {
+                if (err) throw err;
+                console.log('Saved!');
+            })
+        });
+    }
+};
+//Maybe this will be used in the future, but for now its not needed, so its just a placeholder
+function addPointsNoReply(pointsToAdd){
+
+}
+function slotMachine(message){
+    const arrayOfText = message.content.slice().trim().split(/ +/g);
+    const theCommand = arrayOfText.shift().toLowerCase();
+    const betAmount = arrayOfText[0];
+    const slotsRange = 8;
+    const grapes = "🍇";
+    const cherries = "🍒";
+    const lemons = "🍋";
+    const oranges = "🍊";
+    const watermelons = "🍉";
+    const pineapples = "🍍";
+    const bananas = "🍌";
+    const apples = "🍎";
+    const arrayOfFruits = ["🍎", "🍌", "🍍", "🍉", "🍊", "🍋", "🍒", "🍇"];
+    const randomNumber1 = Math.floor(Math.random() * slotsRange);
+    const randomNumber2 = Math.floor(Math.random() * slotsRange);
+    const randomNumber3 = Math.floor(Math.random() * slotsRange);
+    arrayOfFruits[randomNumber1, randomNumber2, randomNumber3];
+    message.reply("You bet " + betAmount + " points. The slot machine rolled: " + arrayOfFruits[randomNumber1] + " " + arrayOfFruits[randomNumber2] + " " + arrayOfFruits[randomNumber3]);
+}
+
 client.login(process.env.BOT_TOKEN)
 //npm run devStart
