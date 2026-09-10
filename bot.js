@@ -11,14 +11,14 @@ const queue = new Map();
 const channelTwoID = process.env.GENERAL_TWOID;
 const channelOneID = process.env.GENERAL_ONEID;
 const channelRocketLeague = process.env.ROCKETCHANNEL_ID;
-const weatherAPPKey = process.env.API_TOKEN_KEY;
+const weatherAPPKey = process.env.WEATHER_API_KEY;
 const yttl = require('ytdl-core');
 const YTSearcher = require('ytsearcher');
 const prefix = "!";
 const ffmpegStatic = require('ffmpeg-static');
 console.log("constants are ready");
 //Twitter API Stuff
-/** Twitter stuff turned off 2/11/2025 for repair 
+/* Twitter stuff turned off 2/11/2025 for repair 
 var Twit = require('twit');
 const { title } = require("process");
 var T = new Twit({
@@ -27,53 +27,7 @@ var T = new Twit({
   access_token:         process.env.ACCESS_TOKENAPI,
   access_token_secret:  process.env.ACCESS_TOKENAPI_SECRET,
 })
-  */
-//Arrays 
-/*
-const { createAudioPlayer, NoSubscriberBehavior } = require('@discordjs/voice');
-const { createAudioResource } = require('@discordjs/voice');
-const { joinVoiceChannel } = require('@discordjs/voice');
-const connection = joinVoiceChannel({
-    channelId: channelOneID,
-    guildId: channel.guild.id,
-    adapterCreator: channel.guild.voiceAdapterCreator,
-});
-const player = createAudioPlayer({
-    behaviors: {
-        noSubscriber: NoSubscriberBehavior.Pause,
-    },
-});
-const resource = createAudioResource('C:\Users\Andrew\Documents\GitHub\DiscordBot\sounds\balls.mp3');
-player.play(resource);
-player.stop();
-
-//const { Client, GatewayIntentBits } = require('discord.js');
-const { joinVoiceChannel, createAudioPlayer, createAudioResource, AudioPlayerStatus } = require('@discordjs/voice');
-const { Intents } = require("discord.js");
-const ffmpegStatic = require('ffmpeg-static'); // Required for playback
-
-// Log the dependency report to ensure everything is set up correctly
-console.log(generateDependencyReport());
-
-const client = new Client({
-    intents: [
-        GatewayIntentBits.Guilds,
-		GatewayIntentBits.GuildMessages,
-		GatewayIntentBits.MessageContent,
-		GatewayIntentBits.GuildMembers, 
-    ]
-}); */
-//const ffmpegStatic = require('ffmpeg-static');
-//const { Client, IntentsBitField } = require('discord.js');
-//const { Intents } = require("discord.js");
-//const myIntents = new IntentsBitField();
-//myIntents.add(IntentsBitField.Flags.GuildPresences, IntentsBitField.Flags.GuildMembers);
-
-//const client = new Client({ intents: myIntents });
-
-//Client.Intents.all();
-//const client = new Discord.Client({ intents: ['GUILD_VOICE_STATES', 'GUILD_MESSAGES', 'GUILDS'] });
-
+*/
 const { Client, GatewayIntentBits } = require('discord.js');
 console.log("first constnat ");
 const { 
@@ -93,20 +47,6 @@ const client = new Client({
         GatewayIntentBits.GuildVoiceStates // Required to interact with voice channels
     ]
 });
-//console.log("Client: ", client);
-//console.log("GatewayIntentBits", GatewayIntentBits);
-// Commenting out old client method?
-/*
-const client = new Client({
-    intents: [
-        GatewayIntentBits.Guilds,
-        GatewayIntentBits.GuildVoiceStates,
-    ], 
-});
-*/
-
-//Client.Intents.all();
-//console.log(generateDependencyReport());
 
 const eightBallArray = [
     "As I see it, yes.",
@@ -202,7 +142,7 @@ client.on('messageCreate', (message) => {
     const theCommand = args.shift().toLowerCase();
     console.log(theCommand)//log what command they entered
     if (theCommand === "!ping") {
-        message.reply("Pong!"); message.react("❤️");
+        message.reply("Pong!"); message.react("🏓");
     } else if (message.content === "!help") {
         message.reply('I can do a bunch of things including play sounds! Here is a list of what I can do, some of these are sounds and some are not!')
         message.reply('!playRandomSound or !prs, !githubQR, !islive "streamer ID here", !playShortSound or !prss, !giveFiles, !gitHubContributions, !noteThis "your note here", !milk, !taco, !mmm, !sure, !rlranks "your steam ID here", !rocketLeagueTrackerHelp, !advice, !stamos, !xgames, !wavefinger, !guitar, !tweet "Your tweet here", !readAllTweets,!randomTweet !BFGDivision, !paulGilb, !C418WetHands, !C418DryHands, !grimreaper, !rain, !ironManGuitarOnly, !senddog, !wedidit, !saveThatShit, !chunky, !eightball, !temperatureSports, !wockyBass, !weather "a city here", !coinFlip, !meow, !randomBetween "a number here", !wocky, !sports, !balls, !affirm, and !ping'); message.react("👍");
@@ -402,20 +342,20 @@ function dadBot(message){
         return;
 }
 function temperatureSports(message){
-    axios.get("http://api.openweathermap.org/data/2.5/weather?q=lockport,us&units=imperial&APPID=" + weatherAPPKey)
+    axios.get("http://api.openweathermap.org/data/2.5/weather?q=normal,us&units=imperial&APPID=" + weatherAPPKey)
         .then((res) => {  
             if(res.data.main.temp <= 45){
-                message.reply("The temperature outside is: " + res.data.main.temp + ", its pretty cold out I would stay in today and play some games");
+                message.reply("The temperature outside is " + res.data.main.temp + ", its pretty cold out I would stay in today and play some games");
             } else if(res.data.main.temp <=55 ){
-                message.reply("The temperature outside is: " + res.data.main.temp + ", its not the warmest out right now I would go if you're desperate. ");
+                message.reply("The temperature outside is " + res.data.main.temp + ", its not the warmest out right now.");
             } else if(res.data.main.temp <= 60  ){
-                message.reply("The temperature outside is: " + res.data.main.temp + ", its a little chilly bring a sweater!");
+                message.reply("The temperature outside is " + res.data.main.temp + ", its a little chilly, bring a sweater!");
             } else if(res.data.main.temp <= 70){
-                message.reply("The temperature outside is: " + res.data.main.temp + ", its nice and warm get out there!");
+                message.reply("The temperature outside is " + res.data.main.temp + ", its warm, get out there!");
             } else if(res.data.main.temp == 75){
-                message.reply("The temperature outside is: " + res.data.main.temp + ", its perfect! ");
+                message.reply("The temperature outside is " + res.data.main.temp + ", its perfect!!!");
             } else {
-                message.reply("The temperature outside is: " + res.data.main.temp + ", its pretty hot out, get out there! ")}
+                message.reply("The temperature outside is " + res.data.main.temp + ", its pretty hot out, get out there! ")}
         })
         .catch((err) => {
             console.error('ERR:', err)
@@ -445,29 +385,29 @@ function giveTextFile(message){
     })
 };
 function weatherSports(message){
-    axios.get("http://api.openweathermap.org/data/2.5/weather?q=lockport,us&units=imperial&APPID=" + weatherAPPKey)
+    axios.get("http://api.openweathermap.org/data/2.5/weather?q=normal,us&units=imperial&APPID=" + weatherAPPKey)
     .then((res) => {  
         if(res.data.wind.speed <= 3){
             message.reply("The wind today is almost nonexistant go outside! The temperature is " + res.data.main.temp + " degrees. The real feel is "
-             + res.data.main.feels_like+  " degrees. The wind speed is " + res.data.wind.speed +
+            + res.data.main.feels_like+  " degrees. The wind speed is " + res.data.wind.speed +
             "mph. The sky is " + res.data.weather[0].main.toLowerCase()+". Tennis would be great today!");
         } else if(res.data.wind.speed <=6 ){
             message.reply("The wind today is pretty slim get out there! The temperature is " + res.data.main.temp + " degrees. The real feel is "
-             + res.data.main.feels_like+  " degrees. The wind speed is " + res.data.wind.speed +
+            + res.data.main.feels_like+  " degrees. The wind speed is " + res.data.wind.speed +
             "mph. The sky is " + res.data.weather[0].main.toLowerCase()+". Tennis would be pretty good today!");
         } else if(res.data.wind.speed <= 9.5  ){
             message.reply("The wind today isnt looking bad, check the forecast for gusts and future developments could be great! The temperature is " + res.data.main.temp + " degrees. The real feel is "
-             + res.data.main.feels_like+  " degrees. The wind speed is " + res.data.wind.speed +
+            + res.data.main.feels_like+  " degrees. The wind speed is " + res.data.wind.speed +
             "mph. The sky is " + res.data.weather[0].main.toLowerCase()+". Disc golf is going to be alright today especially behind some trees. Tennis is not looking good.");
         } else if(res.data.wind.speed <= 15){
             message.reply("The wind today is kinda high I wouldnt reccomend sports unless its forecasted to die down. The temperature is " + res.data.main.temp + " degrees. The real feel is "
-             + res.data.main.feels_like+  " degrees. The wind speed is " + res.data.wind.speed +
+            + res.data.main.feels_like+  " degrees. The wind speed is " + res.data.wind.speed +
             "mph. The sky is " + res.data.weather[0].main.toLowerCase()+". Sports today arent looking good.");
         } else if(res.data.wind.speed <= 20){
             message.reply("The wind today is very high I wouldnt recommend going out for sports. The temperature is " + res.data.main.temp + " degrees. The real feel is "
-             + res.data.main.feels_like+  " degrees. The wind speed is " + res.data.wind.speed +
+            + res.data.main.feels_like+  " degrees. The wind speed is " + res.data.wind.speed +
             "mph. The sky is " + res.data.weather[0].main.toLowerCase()+". Prepare to get frustrated if you're heading out");
-        } else {message.reply("The wind today is insane I highly wouldnt reccomend going out for sports. The temperature is " + res.data.main.temp + " degrees. The real feel is "
+        } else {message.reply("The wind today is crazy! I highly recommend against going out for sports. The temperature is " + res.data.main.temp + " degrees. The real feel is "
             + res.data.main.feels_like+  " degrees. The wind speed is " + res.data.wind.speed +
             "mph. The sky is " + res.data.weather[0].main.toLowerCase()+". Dont do it.")}
     })
@@ -478,7 +418,7 @@ function giveWeather(message){//add the error log
     const city = args[0];
     axios.get("http://api.openweathermap.org/data/2.5/weather?q=" + city + ",us&units=imperial&APPID=" + weatherAPPKey)
     .then((res) => { 
-        message.reply("The temperature is " + res.data.main.temp + " degrees. The real feel is " + res.data.main.feels_like + " degrees. The wind speed is " + res.data.wind.speed + "mph. The sky is " + res.data.weather[0].main.toLowerCase()+". Please, have a nice day.");   
+        message.reply("The temperature is " + res.data.main.temp + " degrees. The real feel is " + res.data.main.feels_like + " degrees. The wind speed is " + res.data.wind.speed + "mph. The sky is " + res.data.weather[0].main.toLowerCase()+".");   
     })
     .catch((err) => {
         console.error('ERR:', err)
