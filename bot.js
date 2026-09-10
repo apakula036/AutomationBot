@@ -72,56 +72,13 @@ const eightBallArray = [
     "Eat my shorts."
 ];
 const soundArray = [
-    "sounds/song.mp3",
-    "sounds/balls.mp3",
-    "sounds/BFGDivision.ogg",
-    "sounds/BritenyToxic.ogg",
-    "sounds/C418DryHands.ogg",
-    "sounds/C418WetHands.ogg",
-    "sounds/chunky.mp3",
-    "sounds/grimreaper.mp3",
-    "sounds/guitar.ogg",
-    "sounds/ironMan.ogg",
-    "sounds/rain.mp3",
-    "sounds/saveThatShit.ogg",
-    "sounds/wedidit.mp4",
-    "sounds/wocky.mp3",
-    "sounds/wockyBass.mp3",
-    "sounds/mmm.mp3",
-    "sounds/sure.mp3",
-    "sounds/xgames.mp3",
-    "sounds/stamos.mp3",
-    "sounds/wavefinger.mp3",
-    "sounds/picklerick.mp3",
-    "sounds/moseby.mp3",
-    "sounds/getdog.mp3",
-    "sounds/rick.mp3",
-    "sounds/trashkid.mp3",
-    "sounds/saytome.mp3",
-    "sounds/geton.mp3",
-    "sounds/milk.mp3"
-];
-const shortSoundArray = [
     "sounds/balls.mp3",
     "sounds/chunky.mp3",
     "sounds/grimreaper.mp3",
     "sounds/rain.mp3",
-    "sounds/wedidit.mp4",
-    "sounds/wocky.mp3",
-    "sounds/wockyBass.mp3",
-    "sounds/mmm.mp3",
-    "sounds/sure.mp3",
-    "sounds/xgames.mp3",
-    "sounds/stamos.mp3",
-    "sounds/wavefinger.mp3",
-    "sounds/picklerick.mp3",
-    "sounds/moseby.mp3",
-    "sounds/getdog.mp3",
-    "sounds/rick.mp3",
-    "sounds/trashkid.mp3",
-    "sounds/saytome.mp3",
-    "sounds/geton.mp3",
-    "sounds/milk.mp3",
+    "sounds/graduation.mp4",
+    "sounds/kingdomHearts.mp3",
+    "sounds/MTEdenDubstep.mp3",
 ];
 var i;
 //Start bot and run these functions
@@ -140,42 +97,13 @@ client.on('messageCreate', (message) => {
     if (!message.content.startsWith(prefix) || message.author.bot) return;
     const args = message.content.slice().trim().split(/ +/g);
     const theCommand = args.shift().toLowerCase();
-    console.log(theCommand)//log what command they entered
-    if (theCommand === "!ping") {
-        message.reply("Pong!"); message.react("🏓");
-    } else if (message.content === "!help") {
-        message.reply('I can do a bunch of things including play sounds! Here is a list of what I can do, some of these are sounds and some are not!')
-        message.reply('!playRandomSound or !prs, !githubQR, !islive "streamer ID here", !playShortSound or !prss, !giveFiles, !gitHubContributions, !noteThis "your note here", !milk, !mmm, !sure, !rlranks "your steam ID here", !rocketLeagueTrackerHelp, !advice, !stamos, !xgames, !wavefinger, !guitar, !tweet "Your tweet here", !readAllTweets,!randomTweet !BFGDivision, !paulGilb, !C418WetHands, !C418DryHands, !grimreaper, !rain, !ironManGuitarOnly, !senddog, !wedidit, !saveThatShit, !chunky, !eightball, !temperatureSports, !wockyBass, !weather "a city here", !coinFlip, !meow, !randomBetween "a number here", !wocky, !sports, !balls, !affirm, !getPokemon and !ping'); message.react("👍");
+    if (message.content === "!help") {
+        message.reply('I can do a bunch of things including play sounds! Here is a list of what I can do: ')
+        message.reply('!playRandomSound, !githubQR, !islive "streamer ID here", !giveFiles, !getPokemon, !gitHubContributions, !noteThis "your note here", !rlranks "your steam ID here", !rocketLeagueTrackerHelp, !advice, !tweet "Your tweet here", !readAllTweets, !randomTweet, !rain, !senddog, !eightball, !temperatureSports, !weather "a city here", !coinFlip, !meow, !randomBetween "a number here", !balls, !affirm, and !sports'); message.react("👍");
     } else if (theCommand === "!advice") {
         giveAdvice(message); 
-    } else if (message.content.startsWith("!notethis")){
+    } else if ((message.content.startsWith("!notethis")) || (message.content.startsWith("!note")) || (message.content.startsWith("!addnote")) || (message.content.startsWith("!idea"))) {
         getReadyToSaveToTextFile(message);
-    } else if (theCommand == "!paulgilb") {
-        playSong("sounds/song.mp3", message)
-    } else if (theCommand == "!ironmanguitaronly") {
-        playSong("sounds/guitar.ogg", message)
-    } else if (theCommand == "!bfgdivision") {
-        playSong("sounds/BFGDivision.ogg", message)
-    } else if (theCommand == "!britenytoxic") {
-        playSong("sounds/BritenyToxic.ogg", message)
-    } else if (theCommand == "!c418dryhands") {
-        playSong("sounds/c418dryhands.ogg", message)
-    } else if (theCommand == "!c418wethands") {
-        playSong("sounds/C418WetHands.ogg", message)
-    } else if (theCommand == "!savethatshit") {
-        playSong("sounds/saveThatShit.ogg", message)
-    } else if (theCommand == "!rocketleague") {
-        playSong("sounds/rocketleague.mp3", message)
-    } else if (theCommand == "!trash") {
-        playSong("sounds/trashkid.mp3", message)
-    } else if (theCommand == "!dog") {
-        playSong("sounds/getdog.mp3", message)
-    } else if (theCommand == "!wedidit") {
-        playSong("sounds/wedidit.mp4", message)
-    }else if (theCommand == "!picklerick") {
-        playSong("sounds/picklerick.mp3", message)
-    } else if (theCommand == "!stamos") {
-        playSong("sounds/stamos.mp3", message)
     } else if (theCommand == "!balls") {
         playSong("sounds/balls.mp3", message)
         ballsCounter()
@@ -187,27 +115,9 @@ client.on('messageCreate', (message) => {
         playSong("sounds/grimreaper.mp3", message)
     } else if (theCommand == "!rain") {
         playSong("sounds/rain.mp3", message)
-    } else if (theCommand == "!wocky") {
-        playSong("sounds/wocky.mp3", message)
-    } else if (theCommand == "!wockybass") {
-        playSong("sounds/wockyBass.mp3", message)
     } else if ((theCommand == "!playrandomsound") || (theCommand == "!prs"))  {
         playRandom(message)
-    } else if (theCommand == "!mmm"){
-        playSong("sounds/mmm.mp3", message)
-    } else if (theCommand == "!sure"){
-        playSong("sounds/sure.mp3", message)
-    } else if (theCommand == "!milk"){
-        playSong("sounds/milk.mp3", message)
-    } else if (theCommand == "!xgames"){
-        playSong("sounds/xgames.mp3", message)    
-    } else if (theCommand == "!saytome"){
-        playSong("sounds/saytome.mp3", message)    
-    } else if (theCommand == "!wavefinger"){
-        playSong("sounds/wavefinger.mp3", message)
-    } else if (theCommand == "!rick"){
-        playSong("sounds/rick.mp3", message)
-    } else if (theCommand == "!stop"){
+    } else if ((theCommand == "!stop") || (theCommand == "!disconnect") || (theCommand == "!leave")){
         disconnectBot(message)
     } else if (message.content.startsWith("!weather")){
         giveWeather(message)
@@ -237,8 +147,6 @@ client.on('messageCreate', (message) => {
         readAllTweets();
     } else if (theCommand == "!randomtweet"){
         readRandomTweet();
-    }else if((theCommand == "!playshortsound") || (theCommand == "!prss")){
-        playRandomShort(message)
     } else if(theCommand === "!rlbeef3s"){
         message.reply("Working on it! Please wait a second, theres a bit going on behind the scenes because RL doesnt want to make this easy!")
         scrapeText('https://rocketleague.tracker.network/rocket-league/profile/steam/76561198010412811/overview', '//*[@id="app"]/div[2]/div[2]/div/main/div[2]/div[3]/div[1]/div/div/div[1]/div[2]/table/tbody/tr[4]/td[2]/div[2]', message)
@@ -257,12 +165,18 @@ client.on('messageCreate', (message) => {
         scrapeTwitch(message)
     } else if (theCommand == "!affirm"){
         affirmationAPICall(message);
-    } else if (theCommand == "!nasaphoto"){
+    } else if ((theCommand == "!nasaphoto") || (theCommand == "!nasaphotodaily") || (theCommand == "!nasaphotoday") || (theCommand == "!nasa")) {
         nasaPhoto(message);
-    } else if (theCommand == "!githubqr"){
+    } else if ((theCommand == "!githubqr") || (theCommand == "!githubqrcode") || (theCommand == "!githubcode") || (theCommand == "!qrcode")) {
         githubQR(message);
     } else if (message.content.startsWith("!getPokemon")){
         getPokemon(message)
+    } else if (theCommand == "!mteden") {
+        playSong("sounds/MTEdenDubstep.mp3", message)
+    } else if (theCommand == "!kingdomhearts") {
+        playSong("sounds/kingdomhearts.mp3", message)
+    } else if (theCommand == "!graduation") {
+        playSong("sounds/graduation.mp4", message)
     }
 });
 //Dad bot functionality here seperate can probably get rid of these needs test 
@@ -281,10 +195,11 @@ function playRandom(message){
     const randomNumber = Math.floor(Math.random()* soundArray.length);
     playSong(soundArray[randomNumber], message)
 }
+/* Deprecated 9/9/2026, not needed anymore, not enough short sounds to make this worth it, can be added back in if more short sounds are added
 function playRandomShort(message){
     const randomNumber = Math.floor(Math.random()* soundArray.length);
     playSong(shortSoundArray[randomNumber], message)
-}
+}*/
 function eightBall(message){
     const randomNumber = Math.floor(Math.random()* eightBallArray.length);
     message.reply(eightBallArray[randomNumber])
@@ -299,8 +214,8 @@ function eightBall(message){
 function playSong(songName, message){
     console.log("Song name: ", songName);
     //console.log(message)
-    console.log(message.guild);
-    console.log(message.guild.me);
+    //console.log(message.guild);
+    //console.log(message.guild.me);
     //console.log(message.guild.me.voice);
     //console.log(message.guild.me.voice.channel);
     
@@ -438,6 +353,7 @@ function giveWeather(message){//add the error log
         message.reply("Uh oh! Error! Please make sure that the location is typed in correctly!");
     })
 }
+/*
 function disconnectBot(message){
     const empty = "";
     message.member.voice.channel.join().then(connection => {
@@ -447,6 +363,16 @@ function disconnectBot(message){
             message.reply("Stopping...");
     }).catch(err => 
         console.log(err))
+}*/
+function disconnectBot(message){
+    const voiceChannel = message.member.voice.channel;
+    const connection = joinVoiceChannel({
+        channelId: voiceChannel.id,
+        guildId: voiceChannel.guild.id,
+        adapterCreator: voiceChannel.guild.voiceAdapterCreator,
+        selfDeaf: false
+    });
+    connection.destroy();
 }
 function checkTimeFunc(){
     if(date.getHours() == 17){
@@ -644,6 +570,7 @@ function getCat(){
     })
     return " ";
 }
+// duplicate?
 function getCatFetch(){
     axios.get("https://cat-fact.herokuapp.com")
         .then(response => console.log(response))
@@ -686,7 +613,7 @@ function getReadyToSaveToTextFile(message){
     for(i = 0; i < args.length; i++){
         stringer = stringer + " " + args[i];
     }
-    client.channels.cache.get(channelTwoID).send("Saved "+ stringer + " to the bots notepad!(my pc thanks)")
+    client.channels.cache.get(channelTwoID).send("Saved your idea: "+ stringer + " to the bots notepad!!! (my pc thanks)")
     saveToTextFile(stringer);
 }
 function getReadyForTweet(message){
@@ -901,11 +828,12 @@ function nasaPhoto(message){
     return " ";
 }
 function githubQR(message){
-    message.reply("https://github.com/apakula036", {
-        files: [
-            "qrcode.png"
-        ]
-    })
-}-
+    const qrcode = new AttachmentBuilder('./qrcode.png')
+        message.channel.send({ 
+            content: "https://github.com/apakula036 \n" +
+            'QR Code for my github: ', 
+            files: [qrcode] 
+        });
+}
 client.login(process.env.BOT_TOKEN)
 //npm run devStart
