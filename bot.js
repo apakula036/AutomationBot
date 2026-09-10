@@ -28,7 +28,7 @@ var T = new Twit({
   access_token_secret:  process.env.ACCESS_TOKENAPI_SECRET,
 })
 */
-const { Client, GatewayIntentBits } = require('discord.js');
+const { Client, GatewayIntentBits, AttachmentBuilder } = require('discord.js');
 console.log("first constnat ");
 const { 
     joinVoiceChannel, 
@@ -126,8 +126,8 @@ const shortSoundArray = [
 var i;
 //Start bot and run these functions
 client.once('ready', () => {
-    client.channels.cache.get(channelTwoID).send('Im Ready!');
-    console.log("im ready")
+    //client.channels.cache.get(channelTwoID).send('Im Ready!');
+    console.log("Bot is started and ready to serve!");
     //checkTimeFunc();
     //greetings();
     //autoCheckRocketLeague();
@@ -145,7 +145,7 @@ client.on('messageCreate', (message) => {
         message.reply("Pong!"); message.react("🏓");
     } else if (message.content === "!help") {
         message.reply('I can do a bunch of things including play sounds! Here is a list of what I can do, some of these are sounds and some are not!')
-        message.reply('!playRandomSound or !prs, !githubQR, !islive "streamer ID here", !playShortSound or !prss, !giveFiles, !gitHubContributions, !noteThis "your note here", !milk, !taco, !mmm, !sure, !rlranks "your steam ID here", !rocketLeagueTrackerHelp, !advice, !stamos, !xgames, !wavefinger, !guitar, !tweet "Your tweet here", !readAllTweets,!randomTweet !BFGDivision, !paulGilb, !C418WetHands, !C418DryHands, !grimreaper, !rain, !ironManGuitarOnly, !senddog, !wedidit, !saveThatShit, !chunky, !eightball, !temperatureSports, !wockyBass, !weather "a city here", !coinFlip, !meow, !randomBetween "a number here", !wocky, !sports, !balls, !affirm, and !ping'); message.react("👍");
+        message.reply('!playRandomSound or !prs, !githubQR, !islive "streamer ID here", !playShortSound or !prss, !giveFiles, !gitHubContributions, !noteThis "your note here", !milk, !mmm, !sure, !rlranks "your steam ID here", !rocketLeagueTrackerHelp, !advice, !stamos, !xgames, !wavefinger, !guitar, !tweet "Your tweet here", !readAllTweets,!randomTweet !BFGDivision, !paulGilb, !C418WetHands, !C418DryHands, !grimreaper, !rain, !ironManGuitarOnly, !senddog, !wedidit, !saveThatShit, !chunky, !eightball, !temperatureSports, !wockyBass, !weather "a city here", !coinFlip, !meow, !randomBetween "a number here", !wocky, !sports, !balls, !affirm, !getPokemon and !ping'); message.react("👍");
     } else if (theCommand === "!advice") {
         giveAdvice(message); 
     } else if (message.content.startsWith("!notethis")){
@@ -219,7 +219,7 @@ client.on('messageCreate', (message) => {
         weatherSports(message)
     } else if(theCommand === "!temperaturesports"){
         temperatureSports(message)
-    } else if (theCommand === "!coinflip") {
+    } else if ((theCommand === "!coinflip") || (theCommand == "!flipacoin") || (theCommand == "!flipcoin")) {
         flipACoin(message)
     } else if (theCommand === "!eightball") {
         eightBall(message)
@@ -266,12 +266,17 @@ client.on('messageCreate', (message) => {
     }
 });
 //Dad bot functionality here seperate can probably get rid of these needs test 
-client.on('message', message => {
+client.on('messageCreate', (message) => {
     if ((message.content.startsWith("I'm")) || (message.content.startsWith("Im")) || (message.content.startsWith("I’m")) || (message.content.startsWith("im")) || (message.content.startsWith("i'm"))){
         dadBot(message)
     }
 });
-//---------------------Functionsssssssssssssssssssssssssss-------------------------
+client.on('messageCreate', (message) => {
+    if ((message.content.startsWith("ping")) || (message.content.startsWith("Ping")) || (message.content.startsWith("PING")) || (message.content.toLowerCase().includes("ping"))){
+        pingBot(message)
+    }
+});
+//---------------------Functions---------------------------------------------------------------------------------------------
 function playRandom(message){
     const randomNumber = Math.floor(Math.random()* soundArray.length);
     playSong(soundArray[randomNumber], message)
@@ -339,7 +344,14 @@ function dadBot(message){
             stringer = stringer + " " + args[i];
         }
         message.channel.send("Hi" + stringer + ", im HelpfulBot")
+        addToTextFile(message);
         return;
+}
+function pingBot(message){
+    message.reply("PONG")
+    message.react("🏓")
+    addToTextFile(message);
+    return;
 }
 function temperatureSports(message){
     axios.get("http://api.openweathermap.org/data/2.5/weather?q=normal,us&units=imperial&APPID=" + weatherAPPKey)
@@ -363,27 +375,28 @@ function temperatureSports(message){
 }
 function flipACoin(message){
     const randomNumber = Math.floor(Math.random() * 2);
+    const heads = new AttachmentBuilder('./coinImages/coin_Heads.jpg');
     if(randomNumber == 1){
-        message.reply("Heads!" , {
-        files: [
-            "https://i.ebayimg.com/images/g/xtcAAOSwLwBaZigS/s-l500.jpg"
-        ]
-    })
+        message.channel.send({ 
+            content: 'heads!', 
+            files: [heads] 
+        });
     } else {
-        message.reply("Tails!", {
-            files: [
-                "https://random-ize.com/coin-flip/us-quarter/us-quarter-back.jpg"
-            ] 
+        const tails = new AttachmentBuilder('./coinImages/coin_tails.jpg');
+        console.log(tails.attachment);
+        message.channel.send({ 
+            content: 'Tails!', 
+            files: [tails] 
         });
     }
 }
 function giveTextFile(message){
-        message.reply("Here ya go!" , {
-        files: [
-            "testfile.txt"
-        ]
-    })
-};
+    const textFile = new AttachmentBuilder('./testfile.txt');
+    message.channel.send({ 
+        content: "Here is the text file you requested, it has all of the notes that have been saved to the bot so far. If you want to add more notes, use the command !noteThis 'your note here' and it will be added to the file. If you want to see a random note, use the command !randomNote and it will give you one of the notes from the file.", 
+        files: [textFile] 
+    });
+}
 function weatherSports(message){
     axios.get("http://api.openweathermap.org/data/2.5/weather?q=normal,us&units=imperial&APPID=" + weatherAPPKey)
     .then((res) => {  
@@ -603,6 +616,11 @@ function ballChecker(message){
         //console.log("value of data in the ballchecker function: ", data);
         message.reply("The counter is at: " + data)
         return data; 
+    });
+}
+function addToTextFile(message){
+    fs.appendFile('Dad_and_Ping.txt', "Ping bot triggered by " + message.author.username + " with message: " + message.content + "\n", function (err) {
+        if (err) throw err;
     });
 }
 function giveAdvice(message){
