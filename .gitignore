@@ -4,6 +4,10 @@ textFiles/notes
 textFiles/notes.txt
 textFiles/mynewfile1.txt
 sounds/song.mp3
+sounds/balls.mp3
+sounds/chunky.mp3
+sounds/grimreaper.mp3
+sounds/rain.mp3
 ffmpeg/
 *.ogg
 *.mp4

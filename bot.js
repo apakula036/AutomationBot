@@ -22,13 +22,13 @@ console.log("constants are ready");
 var Twit = require('twit');
 const { title } = require("process");
 var T = new Twit({
-  consumer_key:         process.env.CONSUMER_KEYAPI,
-  consumer_secret:      process.env.CONSUMER_KEYAPI_SECRET,
-  access_token:         process.env.ACCESS_TOKENAPI,
-  access_token_secret:  process.env.ACCESS_TOKENAPI_SECRET,
+    consumer_key:         process.env.CONSUMER_KEYAPI,
+    consumer_secret:      process.env.CONSUMER_KEYAPI_SECRET,
+    access_token:         process.env.ACCESS_TOKENAPI,
+    access_token_secret:  process.env.ACCESS_TOKENAPI_SECRET,
 })
 */
-const { Client, GatewayIntentBits, AttachmentBuilder } = require('discord.js');
+const { Client, Events, GatewayIntentBits, AttachmentBuilder } = require('discord.js');
 console.log("first constnat ");
 const { 
     joinVoiceChannel, 
@@ -80,9 +80,11 @@ const soundArray = [
     "sounds/kingdomHearts.mp3",
     "sounds/MTEdenDubstep.mp3",
 ];
+
+
 var i;
 //Start bot and run these functions
-client.once('ready', () => {
+client.once(Events.ClientReady, (readyClient) => {
     //client.channels.cache.get(channelTwoID).send('Im Ready!');
     console.log("Bot is started and ready to serve!");
     //checkTimeFunc();
@@ -117,6 +119,8 @@ client.on('messageCreate', (message) => {
         playSong("sounds/rain.mp3", message)
     } else if ((theCommand == "!playrandomsound") || (theCommand == "!prs"))  {
         playRandom(message)
+    } else if ((theCommand == "!playrandomshort") || (theCommand == "!prss"))  {
+        playRandomShort(message)
     } else if ((theCommand == "!stop") || (theCommand == "!disconnect") || (theCommand == "!leave")){
         disconnectBot(message)
     } else if (message.content.startsWith("!weather")){
@@ -183,12 +187,17 @@ client.on('messageCreate', (message) => {
         checkPoints(message);
     } else if (theCommand == "!slotmachine") {
         slotMachine(message);
-    }
+    } 
 });
 //Dad bot functionality here seperate can probably get rid of these needs test 
 client.on('messageCreate', (message) => {
     if ((message.content.startsWith("I'm")) || (message.content.startsWith("Im")) || (message.content.startsWith("I’m")) || (message.content.startsWith("im")) || (message.content.startsWith("i'm"))){
         dadBot(message)
+    }
+});
+client.on('messageCreate', (message) => {
+    if ((message.content.toLowerCase().startsWith("Thank you Helpfulbot")) || (message.content.toLowerCase().startsWith("Thanks HelpfulBot!")) || (message.content.toLowerCase().startsWith("Thank you Helpful Bot!")) || (message.content.toLowerCase().includes("thank you helpfulbot")) || (message.content.toLowerCase().startsWith("thank u helpfulbot"))){
+        yourWelcomeBot(message)
     }
 });
 client.on('messageCreate', (message) => {
@@ -201,6 +210,32 @@ function playRandom(message){
     const randomNumber = Math.floor(Math.random()* soundArray.length);
     playSong(soundArray[randomNumber], message)
 }
+
+function playRandomShort(message){
+    //const randomNumber = Math.floor(Math.random()* shortSoundArray.length);
+    //playSong(randomMp3, message)
+
+    const folderPath = './soundFolder'; 
+
+// 1. Read all files in the directory
+fs.readdir(folderPath, (err, files) => {
+    if (err) {
+        return console.log("Could not list the directory.", err);
+    }
+    // 2. Filter the files to make sure you only pick .mp3 extensions
+    const mp3Files = files.filter(file => path.extname(file).toLowerCase() === '.mp3');
+    if (mp3Files.length === 0) {
+    return console.log("No MP3 files found in this folder.");
+    }
+    // 3. Select a random index
+    const randomIndex = Math.floor(Math.random() * mp3Files.length);
+    const randomMp3 = path.join(folderPath, mp3Files[randomIndex]);
+
+    console.log("Selected MP3:", randomMp3);
+    playSong(randomMp3, message)
+});
+}
+
 /* Deprecated 9/9/2026, not needed anymore, not enough short sounds to make this worth it, can be added back in if more short sounds are added
 function playRandomShort(message){
     const randomNumber = Math.floor(Math.random()* soundArray.length);
@@ -266,6 +301,11 @@ function pingBot(message){
     message.reply("PONG")
     message.react("🏓")
     addToTextFile(message);
+    return;
+}
+function yourWelcomeBot(message){
+    message.reply("You're welcome!")
+    message.react("❤️")
     return;
 }
 function temperatureSports(message){
@@ -426,19 +466,19 @@ function makeTweets(theTweet){
 function saveTweetID(tweetID, theTweet){
     fs.appendFile('./textfiles/mynewfile1.txt', "\r\n", function (err) {
         if (err) throw err;
-      });
+    });
     fs.appendFile('./textfiles/mynewfile1.txt', tweetID +"_"+ theTweet, function (err) {
         if (err) throw err;
         console.log('Saved ' + theTweet);
-      });
+    });
 }function saveTweetNoID(theTweet){
     fs.appendFile('./textfiles/tweetsnoids.txt', "\r\n", function (err) {
         if (err) throw err;
-      });
+    });
     fs.appendFile('./textfiles/tweetsnoids.txt', theTweet + "_" , function (err) {
         if (err) throw err;
         console.log('Saved ' + theTweet + " to file tweetsNoIDs.txt");
-      });
+    });
 }
 function readRandomTweet(){
     fs.stat('./textfiles/tweetsnoids.txt', function (error, stats) { 
@@ -927,7 +967,6 @@ function slotMachine(message){
     const arrayOfText = message.content.slice().trim().split(/ +/g);
     const theCommand = arrayOfText.shift().toLowerCase();
     const betAmount = arrayOfText[0];
-    const slotsRange = 8;
     const grapes = "🍇";
     const cherries = "🍒";
     const lemons = "🍋";
@@ -936,12 +975,104 @@ function slotMachine(message){
     const pineapples = "🍍";
     const bananas = "🍌";
     const apples = "🍎";
-    const arrayOfFruits = ["🍎", "🍌", "🍍", "🍉", "🍊", "🍋", "🍒", "🍇"];
-    const randomNumber1 = Math.floor(Math.random() * slotsRange);
-    const randomNumber2 = Math.floor(Math.random() * slotsRange);
-    const randomNumber3 = Math.floor(Math.random() * slotsRange);
-    arrayOfFruits[randomNumber1, randomNumber2, randomNumber3];
-    message.reply("You bet " + betAmount + " points. The slot machine rolled: " + arrayOfFruits[randomNumber1] + " " + arrayOfFruits[randomNumber2] + " " + arrayOfFruits[randomNumber3]);
+    const arrayOfFruits = ["🍒", "💣", "🍀", "🍋"];
+    // "🍉", "🍊", "🍋", "🍒", "🍇", "🍍"
+
+    const toprandomNumber1 = Math.floor(Math.random() * arrayOfFruits.length);
+    const toprandomNumber2 = Math.floor(Math.random() * arrayOfFruits.length);
+    const toprandomNumber3 = Math.floor(Math.random() * arrayOfFruits.length);
+
+    const middlerandomNumber1 = Math.floor(Math.random() * arrayOfFruits.length);
+    const middlerandomNumber2 = Math.floor(Math.random() * arrayOfFruits.length);
+    const middlerandomNumber3 = Math.floor(Math.random() * arrayOfFruits.length);
+
+    const bottomrandomNumber1 = Math.floor(Math.random() * arrayOfFruits.length);
+    const bottomrandomNumber2 = Math.floor(Math.random() * arrayOfFruits.length);
+    const bottomrandomNumber3 = Math.floor(Math.random() * arrayOfFruits.length);
+    result = 0;
+    if (toprandomNumber1 == toprandomNumber2 && toprandomNumber2 == toprandomNumber3){
+        result++;
+        console.log("result increased by 1 from top row");
+        //addPointsNoReply(betAmount * 2);
+    } 
+    if (middlerandomNumber1 == middlerandomNumber2 && middlerandomNumber2 == middlerandomNumber3){
+        result++;
+        console.log("result increased by 1 from middle row");
+    } 
+    if (bottomrandomNumber1 == bottomrandomNumber2 && bottomrandomNumber2 == bottomrandomNumber3){
+        result++;
+        console.log("result increased by 1 from bottom row");
+    //-------------------------Logic for vertical row checking ---------------------------------------
+    } 
+    if (toprandomNumber1 == middlerandomNumber1 && middlerandomNumber1 == bottomrandomNumber1){
+        result++;
+        console.log("result increased by 1 from left column");
+    } 
+    if (toprandomNumber2 == middlerandomNumber2 && middlerandomNumber2 == bottomrandomNumber2){
+        result++;
+        console.log("result increased by 1 from middle column");
+    } 
+    if (toprandomNumber3 == middlerandomNumber3 && middlerandomNumber3 == bottomrandomNumber3){
+        result++;
+        console.log("result increased by 1 from right column");
+        // ------------------------------ diagnol logic -----------------------------------
+    } 
+    if (toprandomNumber1 == middlerandomNumber2 && middlerandomNumber2 == bottomrandomNumber3){
+        result++;
+        console.log("result increased by 1 from diagonal left to right");
+    } 
+    if (toprandomNumber3 == middlerandomNumber2 && middlerandomNumber2 == bottomrandomNumber1){
+        result++;
+        console.log("result increased by 1 from diagonal right to left");
+    } if (result == 0){
+        const randomNumber = Math.floor(Math.random() * 1000) + 1;
+        if(randomNumber == 1000){
+            console.log("MEGA JACKPOT LOSER ALERT")
+            rewardText = "🚨🚨🚨🚨🚨🚨🚨🚨 MEGA JACKPOT LOSER ALERT YOU ROLLED A JACKPOT FOR BEING A LOSER A 1/1000 CHANCE!!!!! 🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨"
+        } else {
+            rewardText = "You lost! You rolled no matches. You lost " + betAmount + " points.";
+        }
+    } else if (result == 1){
+        rewardText = "You rolled 1 match! You won " + Math.floor(betAmount * 1) + " points!";
+    } else if (result == 2){
+        rewardText = "You rolled 2 matches! You won " + Math.floor(betAmount * 2) + " points!";
+    } else if (result == 3){
+        rewardText = "You rolled 3 matches! You won " + Math.floor(betAmount * 3) + " points!";
+    } else if (result == 4){
+        rewardText = "You rolled 4 matches! You won " + Math.floor(betAmount * 4) + " points!";
+    } else if (result == 5){
+        rewardText = "You rolled 5 matches!! You won " + Math.floor(betAmount * 6) + " points!";
+    } else if (result == 6){
+        rewardText = "You rolled 6 matches! Very impressive! You won " + Math.floor(betAmount * 8) + " points!";
+    } else if (result == 7){
+        rewardText = "🚨🚨Mini jackpot!!!!!! 🚨🚨 Holy Cow!!! You won " + Math.floor(betAmount * 50) + " points!";
+    } else if (result == 8){
+        rewardText = "🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨MEGA JACKPOTTTTTTTTTTTTTTTTTTTTTTTTTTTTT 🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨 " + Math.floor(betAmount * 100) + " points!🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨";
+        playSong("soundFolder/CROWD CHEERING.mp3", message)
+    }
+    
+    doubleArray = [[],[],[]];
+    doubleArray[0] = [arrayOfFruits[toprandomNumber1], arrayOfFruits[toprandomNumber2], arrayOfFruits[toprandomNumber3]];
+    doubleArray[1] = [arrayOfFruits[middlerandomNumber1], arrayOfFruits[middlerandomNumber2], arrayOfFruits[middlerandomNumber3]];
+    doubleArray[2] = [arrayOfFruits[bottomrandomNumber1], arrayOfFruits[bottomrandomNumber2], arrayOfFruits[bottomrandomNumber3]];
+    console.log(doubleArray);
+    /*
+    console.log(doubleArray[0][0]);
+    console.log(doubleArray[0][1]);
+    console.log(doubleArray[0][2]);
+
+    console.log(doubleArray[1][0]);
+    console.log(doubleArray[1][1]);
+    console.log(doubleArray[1][2]);
+
+    console.log(doubleArray[2][0]);
+    console.log(doubleArray[2][1]);
+    console.log(doubleArray[2][2]);
+    */
+    //message.reply("You bet " + betAmount + " points. The slot machine rolled: " + arrayOfFruits[randomNumber1] + " " + arrayOfFruits[randomNumber2] + " " + arrayOfFruits[randomNumber3]);
+    //message.reply("------------------------------\n|         "+arrayOfFruits[Math.floor(Math.random() * slotsRange)]+"        |        "+arrayOfFruits[Math.floor(Math.random() * slotsRange)]+"        |        "+arrayOfFruits[Math.floor(Math.random() * slotsRange)]+"        |\n|        "+arrayOfFruits[randomNumber1]+"         |       "+arrayOfFruits[randomNumber2]+"          |       "+arrayOfFruits[randomNumber3]+"         |\n|          "+arrayOfFruits[Math.floor(Math.random() * slotsRange)]+"      |        "+arrayOfFruits[Math.floor(Math.random() * slotsRange)]+"        |        "+arrayOfFruits[Math.floor(Math.random() * slotsRange)]+"        |\n ------------------------------\n")
+    message.reply("-------------\n|"+doubleArray[0][0]+"|"+doubleArray[0][1]+"|"+doubleArray[0][2]+"|\n|"+doubleArray[1][0]+"|"+doubleArray[1][1]+"|"+doubleArray[1][2]+"|\n|"+doubleArray[2][0]+"|"+doubleArray[2][1]+"|"+doubleArray[2][2]+"|\n-------------\n" + rewardText);
+
 }
 
 client.login(process.env.BOT_TOKEN)
