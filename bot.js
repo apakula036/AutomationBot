@@ -29,7 +29,6 @@ var T = new Twit({
 })
 */
 const { Client, Events, GatewayIntentBits, AttachmentBuilder } = require('discord.js');
-console.log("first constnat ");
 const { 
     joinVoiceChannel, 
     createAudioPlayer, 
@@ -183,6 +182,8 @@ client.on('messageCreate', (message) => {
         playSong("sounds/graduation.mp4", message)
     } else if (message.content.startsWith("!addpoints")) {
         addPoints(message);
+    } else if (message.content.startsWith("!givepoints")) {
+        testFunction(message);
     } else if (theCommand == "!checkpoints") {
         checkPoints(message);
     } else if (theCommand == "!slotmachine") {
@@ -293,7 +294,7 @@ function dadBot(message){
         for(i = 0; i < args.length; i++){
             stringer = stringer + " " + args[i];
         }
-        message.channel.send("Hi" + stringer + ", im HelpfulBot")
+        message.channel.send("Hi" + stringer + ", I'm HelpfulBot")
         addToTextFile(message);
         return;
 }
@@ -876,6 +877,7 @@ function githubQR(message){
         });
 }
 //function that will allow users to check the current point totals 
+//fix me 
 function checkPoints(message){
     console.log("check points function called");
     //Read the text file 
@@ -903,7 +905,7 @@ function addPoints(message){
     console.log("User: " + message.author.username);
     console.log("This is the points being added: " + incomingPoints[1]);
     //check the username of the person calling the command and add points to their total based on the text file associated with them
-    if (message.author.username == meatybeef) {
+    if (message.author.username == "meatybeef") {
         //Read the text file 
         fs.readFile('./textfiles/pointsFileBeef.txt', function(err, data) {
             console.log("Parsing message? " + incomingPoints)
@@ -959,10 +961,86 @@ function addPoints(message){
         });
     }
 };
-//Maybe this will be used in the future, but for now its not needed, so its just a placeholder
-function addPointsNoReply(pointsToAdd){
+function testFunction(message){
+    string = chopMessage(message)
+    addPointsNoReply(string, message.author.username);
+}
+//seperate out the message here 
+function chopMessage(message){
+    const args = message.content.slice().trim().split(/ +/g);
+    const theCommand = args.shift().toLowerCase();
+    var string = "";
+    for(i = 0; i < args.length; i++){
+        string = string + " " + args[i];
+    }
+    console.log("This is the string being sent to the addPointsNoReply function: " + string);
+    console.log("This is the args being sent to the addPointsNoReply function: " + args);
+    console.log("This is the args being sent to the addPointsNoReply function: " + args[1]);
+    return args[0];
+}
+function createLogFileForAddedPoints(pointsToAdd, whoGetsPoints, reasonForPoints){
+    //this function will create a log file for the points being added to each user, it will be used for tracking purposes and to make sure that the points are being added correctly
+    
 
 }
+function addPointsNoReply(pointsToAdd, whoGetsPoints){
+    //check the username of the person calling the command and add points to their total based on the text file associated with them
+    if (whoGetsPoints == "meatybeef") {
+        //Read the text file 
+        fs.readFile('./textfiles/pointsFileBeef.txt', function(err, data) {
+            console.log("Parsing message? " + pointsToAdd)
+            console.log("adding " + pointsToAdd + " more to the points total for user: " + whoGetsPoints + " Current points: " + data)
+            //make data an int and add the points being added to it, then convert it back to a string and write it to the text file
+            data = parseInt(data) + parseInt(pointsToAdd);
+            console.log(data)
+            data = data.toString()
+            console.log("Adding " + pointsToAdd + " more points to your total!"+ " New total: " + data)
+            fs.writeFile('./textfiles/pointsFileBeef.txt', data, 'utf8', function (err) {
+                if (err) throw err;
+                console.log('Saved!');
+            })
+        });
+    } else if (whoGetsPoints == "pakoola") {
+        fs.readFile('./textfiles/pointsFilePakoola.txt', function(err, data) {
+            console.log("Parsing message? " + pointsToAdd)
+            console.log("adding " + pointsToAdd + " more to the points total for user: " + whoGetsPoints + " Current points: " + data)
+            data = parseInt(data) + parseInt(pointsToAdd);
+            console.log(data)
+            data = data.toString()
+            console.log("Adding " + pointsToAdd + " more points to your total!"+ " New total: " + data)
+            fs.writeFile('./textfiles/pointsFilePakoola.txt', data, 'utf8', function (err) {
+                if (err) throw err;
+                console.log('Saved!');
+            })
+        });
+    } else if (whoGetsPoints == "dafarmer") {
+        fs.readFile('./textfiles/pointsFileDafarmer.txt', function(err, data) {
+            console.log("Parsing message? " + pointsToAdd)
+            console.log("adding " + pointsToAdd + " more to the points total for user: " + whoGetsPoints + " Current points: " + data)
+            data = parseInt(data) + parseInt(pointsToAdd);
+            console.log(data)
+            data = data.toString()
+            console.log("Adding " + pointsToAdd + " more points to your total!"+ " New total: " + data)
+            fs.writeFile('./textfiles/pointsFileDafarmer.txt', data, 'utf8', function (err) {
+                if (err) throw err;
+                console.log('Saved!');
+            })
+        });
+    } else if (whoGetsPoints == "rabidchihuahuas") {
+        fs.readFile('./textfiles/pointsFileRabid.txt', function(err, data) {
+            console.log("Parsing message? " + pointsToAdd)
+            console.log("adding " + pointsToAdd + " more to the points total for user: " + whoGetsPoints + " Current points: " + data)
+            data = parseInt(data) + parseInt(pointsToAdd);
+            console.log(data)
+            data = data.toString()
+            console.log("Adding " + pointsToAdd + " more points to your total!"+ " New total: " + data)
+            fs.writeFile('./textfiles/pointsFileRabid.txt', data, 'utf8', function (err) {
+                if (err) throw err;
+                console.log('Saved!');
+            })
+        });
+    } 
+};
 function slotMachine(message){
     const arrayOfText = message.content.slice().trim().split(/ +/g);
     const theCommand = arrayOfText.shift().toLowerCase();
@@ -1056,21 +1134,6 @@ function slotMachine(message){
     doubleArray[1] = [arrayOfFruits[middlerandomNumber1], arrayOfFruits[middlerandomNumber2], arrayOfFruits[middlerandomNumber3]];
     doubleArray[2] = [arrayOfFruits[bottomrandomNumber1], arrayOfFruits[bottomrandomNumber2], arrayOfFruits[bottomrandomNumber3]];
     console.log(doubleArray);
-    /*
-    console.log(doubleArray[0][0]);
-    console.log(doubleArray[0][1]);
-    console.log(doubleArray[0][2]);
-
-    console.log(doubleArray[1][0]);
-    console.log(doubleArray[1][1]);
-    console.log(doubleArray[1][2]);
-
-    console.log(doubleArray[2][0]);
-    console.log(doubleArray[2][1]);
-    console.log(doubleArray[2][2]);
-    */
-    //message.reply("You bet " + betAmount + " points. The slot machine rolled: " + arrayOfFruits[randomNumber1] + " " + arrayOfFruits[randomNumber2] + " " + arrayOfFruits[randomNumber3]);
-    //message.reply("------------------------------\n|         "+arrayOfFruits[Math.floor(Math.random() * slotsRange)]+"        |        "+arrayOfFruits[Math.floor(Math.random() * slotsRange)]+"        |        "+arrayOfFruits[Math.floor(Math.random() * slotsRange)]+"        |\n|        "+arrayOfFruits[randomNumber1]+"         |       "+arrayOfFruits[randomNumber2]+"          |       "+arrayOfFruits[randomNumber3]+"         |\n|          "+arrayOfFruits[Math.floor(Math.random() * slotsRange)]+"      |        "+arrayOfFruits[Math.floor(Math.random() * slotsRange)]+"        |        "+arrayOfFruits[Math.floor(Math.random() * slotsRange)]+"        |\n ------------------------------\n")
     message.reply("-------------\n|"+doubleArray[0][0]+"|"+doubleArray[0][1]+"|"+doubleArray[0][2]+"|\n|"+doubleArray[1][0]+"|"+doubleArray[1][1]+"|"+doubleArray[1][2]+"|\n|"+doubleArray[2][0]+"|"+doubleArray[2][1]+"|"+doubleArray[2][2]+"|\n-------------\n" + rewardText);
 
 }

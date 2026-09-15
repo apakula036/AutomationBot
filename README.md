@@ -51,6 +51,7 @@ When the bot starts, the bot checks the weather in the area and lets me know the
 !sports: This command will read the wind, temp, and realfeel of the Normal IL area and give advice on if playing sports today is a good idea. This uses the Weather API to find this data.
 !temperatureSports: Like the !sports command, this command is more specific and will read the temperature of the Normal IL area and give advice on if playing sports today is a good idea. This uses the Weather API to find this data.
 !randomBetween "a number here": This command is to random a number between a set range. 
+!slotMachine "amount to bet": Custom slot machine that uses points earned by using other commands and given out during games. 
 
 ---Always running commnds---
 Dadbot - Ever wanted a bot that whenever someone says "Im hungry" itll respond with "Hi Hungry, Im dadbot?" Look no further! 
