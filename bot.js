@@ -192,17 +192,24 @@ client.on('messageCreate', (message) => {
 });
 //Dad bot functionality here seperate can probably get rid of these needs test 
 client.on('messageCreate', (message) => {
-    if ((message.content.startsWith("I'm")) || (message.content.startsWith("Im")) || (message.content.startsWith("I’m")) || (message.content.startsWith("im")) || (message.content.startsWith("i'm"))){
+    if ( (message.author.bot == false) && (message.content.startsWith("I'm")) || (message.content.startsWith("Im")) || (message.content.startsWith("I’m")) || (message.content.startsWith("im")) || (message.content.startsWith("i'm"))){
         dadBot(message)
     }
 });
+//advanced dadbot
 client.on('messageCreate', (message) => {
-    if ((message.content.toLowerCase().startsWith("Thank you Helpfulbot")) || (message.content.toLowerCase().startsWith("Thanks HelpfulBot!")) || (message.content.toLowerCase().startsWith("Thank you Helpful Bot!")) || (message.content.toLowerCase().includes("thank you helpfulbot")) || (message.content.toLowerCase().startsWith("thank u helpfulbot"))){
+    if ( (message.author.bot == false) && ((message.content.startsWith("I'm")) || (message.content.startsWith("Im")) || (message.content.startsWith("I’m")) || (message.content.startsWith("im")) || (message.content.startsWith("i'm")) || (message.content.toLowerCase().includes("im")) || (message.content.toLowerCase().includes("i'm")))){
+        dadBot(message)
+    }
+});
+//regular dadbot
+client.on('messageCreate', (message) => {
+    if ((message.author.bot == false) && (message.content.toLowerCase().startsWith("Thank you Helpfulbot")) || (message.content.toLowerCase().startsWith("Thanks HelpfulBot!")) || (message.content.toLowerCase().startsWith("Thank you Helpful Bot!")) || (message.content.toLowerCase().includes("thank you helpfulbot")) || (message.content.toLowerCase().startsWith("thank u helpfulbot"))){
         yourWelcomeBot(message)
     }
 });
 client.on('messageCreate', (message) => {
-    if ((message.content.startsWith("ping")) || (message.content.startsWith("Ping")) || (message.content.startsWith("PING")) || (message.content.toLowerCase().includes("ping"))){
+    if ((message.author.bot == false) && (message.content.startsWith("ping")) || (message.content.startsWith("Ping")) || (message.content.startsWith("PING")) || (message.content.toLowerCase().includes("ping"))){
         pingBot(message)
     }
 });
@@ -963,9 +970,10 @@ function addPoints(message){
 };
 function testFunction(message){
     string = chopMessage(message)
-    addPointsNoReply(string, message.author.username);
+    addPointsNoReply(string, message.author.username, "testFunction");
 }
-//seperate out the message here 
+//seperate out the message here isolating both the reason for the points and the amount of points being added, this will be used in the addPointsNoReply function
+//needs work here
 function chopMessage(message){
     const args = message.content.slice().trim().split(/ +/g);
     const theCommand = args.shift().toLowerCase();
@@ -973,68 +981,82 @@ function chopMessage(message){
     for(i = 0; i < args.length; i++){
         string = string + " " + args[i];
     }
-    console.log("This is the string being sent to the addPointsNoReply function: " + string);
-    console.log("This is the args being sent to the addPointsNoReply function: " + args);
-    console.log("This is the args being sent to the addPointsNoReply function: " + args[1]);
+    //console.log("This is the string being sent to the addPointsNoReply function: " + string);
+    //console.log("This is the args being sent to the addPointsNoReply function: " + args);
+    //console.log("This is the args being sent to the addPointsNoReply function: " + args[1]);
     return args[0];
 }
 function createLogFileForAddedPoints(pointsToAdd, whoGetsPoints, reasonForPoints){
     //this function will create a log file for the points being added to each user, it will be used for tracking purposes and to make sure that the points are being added correctly
-    
+    fs.readFile('./textfiles/pointsLog.txt', function(err, data) {
+        console.log("adding to the log file: ", pointsToAdd + " " + whoGetsPoints + " " + reasonForPoints)
 
+        console.log(data)
+        data = data.toString()
+        console.log(data)
+        fs.writeFile('./textfiles/pointsLog.txt', pointsToAdd + " " + whoGetsPoints + " " + reasonForPoints, 'utf8', function (err) {
+            if (err) throw err;
+            console.log('Saved!');
+        })
+    });
 }
-function addPointsNoReply(pointsToAdd, whoGetsPoints){
+//function that is called when games are played and points are added, this function will not reply to the user, it will just add the points to the text file associated with the user
+function addPointsNoReply(pointsToAdd, whoGetsPoints, fromWhatGame){
     //check the username of the person calling the command and add points to their total based on the text file associated with them
     if (whoGetsPoints == "meatybeef") {
         //Read the text file 
-        fs.readFile('./textfiles/pointsFileBeef.txt', function(err, data) {
+        fs.readFile('./textfiles/pointsFileBeef.txt', function(err, currentPoints) {
             console.log("Parsing message? " + pointsToAdd)
-            console.log("adding " + pointsToAdd + " more to the points total for user: " + whoGetsPoints + " Current points: " + data)
+            console.log("adding " + pointsToAdd + " more to the points total for user: " + whoGetsPoints + " Current points: " + currentPoints)
             //make data an int and add the points being added to it, then convert it back to a string and write it to the text file
-            data = parseInt(data) + parseInt(pointsToAdd);
-            console.log(data)
-            data = data.toString()
-            console.log("Adding " + pointsToAdd + " more points to your total!"+ " New total: " + data)
-            fs.writeFile('./textfiles/pointsFileBeef.txt', data, 'utf8', function (err) {
+            newPointTotal = parseInt(currentPoints) + parseInt(pointsToAdd);
+            console.log(newPointTotal)
+            newPointTotal = newPointTotal.toString()
+            createLogFileForAddedPoints(pointsToAdd, whoGetsPoints, fromWhatGame)
+            console.log("Adding " + pointsToAdd + " more points to your total!"+ " New total: " + newPointTotal)
+            fs.writeFile('./textfiles/pointsFileBeef.txt', newPointTotal, 'utf8', function (err) {
                 if (err) throw err;
                 console.log('Saved!');
             })
         });
     } else if (whoGetsPoints == "pakoola") {
-        fs.readFile('./textfiles/pointsFilePakoola.txt', function(err, data) {
+        fs.readFile('./textfiles/pointsFilePakoola.txt', function(err, currentPoints) {
             console.log("Parsing message? " + pointsToAdd)
-            console.log("adding " + pointsToAdd + " more to the points total for user: " + whoGetsPoints + " Current points: " + data)
-            data = parseInt(data) + parseInt(pointsToAdd);
-            console.log(data)
-            data = data.toString()
-            console.log("Adding " + pointsToAdd + " more points to your total!"+ " New total: " + data)
-            fs.writeFile('./textfiles/pointsFilePakoola.txt', data, 'utf8', function (err) {
+            console.log("adding " + pointsToAdd + " more to the points total for user: " + whoGetsPoints + " Current points: " + currentPoints)
+            newPointTotal = parseInt(currentPoints) + parseInt(pointsToAdd);
+            console.log(newPointTotal)
+            newPointTotal = newPointTotal.toString()
+            createLogFileForAddedPoints(pointsToAdd, whoGetsPoints, fromWhatGame)
+            console.log("Adding " + pointsToAdd + " more points to your total!"+ " New total: " + newPointTotal)
+            fs.writeFile('./textfiles/pointsFilePakoola.txt', newPointTotal, 'utf8', function (err) {
                 if (err) throw err;
                 console.log('Saved!');
             })
         });
     } else if (whoGetsPoints == "dafarmer") {
-        fs.readFile('./textfiles/pointsFileDafarmer.txt', function(err, data) {
+        fs.readFile('./textfiles/pointsFileDafarmer.txt', function(err, currentPoints) {
             console.log("Parsing message? " + pointsToAdd)
-            console.log("adding " + pointsToAdd + " more to the points total for user: " + whoGetsPoints + " Current points: " + data)
-            data = parseInt(data) + parseInt(pointsToAdd);
-            console.log(data)
-            data = data.toString()
-            console.log("Adding " + pointsToAdd + " more points to your total!"+ " New total: " + data)
-            fs.writeFile('./textfiles/pointsFileDafarmer.txt', data, 'utf8', function (err) {
+            console.log("adding " + pointsToAdd + " more to the points total for user: " + whoGetsPoints + " Current points: " + currentPoints)
+            newPointTotal = parseInt(currentPoints) + parseInt(pointsToAdd);
+            console.log(newPointTotal)
+            newPointTotal = newPointTotal.toString()
+            createLogFileForAddedPoints(pointsToAdd, whoGetsPoints, fromWhatGame)
+            console.log("Adding " + pointsToAdd + " more points to your total!"+ " New total: " + newPointTotal)
+            fs.writeFile('./textfiles/pointsFileDafarmer.txt', newPointTotal, 'utf8', function (err) {
                 if (err) throw err;
                 console.log('Saved!');
             })
         });
     } else if (whoGetsPoints == "rabidchihuahuas") {
-        fs.readFile('./textfiles/pointsFileRabid.txt', function(err, data) {
+        fs.readFile('./textfiles/pointsFileRabid.txt', function(err, currentPoints) {
             console.log("Parsing message? " + pointsToAdd)
-            console.log("adding " + pointsToAdd + " more to the points total for user: " + whoGetsPoints + " Current points: " + data)
-            data = parseInt(data) + parseInt(pointsToAdd);
-            console.log(data)
-            data = data.toString()
-            console.log("Adding " + pointsToAdd + " more points to your total!"+ " New total: " + data)
-            fs.writeFile('./textfiles/pointsFileRabid.txt', data, 'utf8', function (err) {
+            console.log("adding " + pointsToAdd + " more to the points total for user: " + whoGetsPoints + " Current points: " + currentPoints)
+            newPointTotal = parseInt(currentPoints) + parseInt(pointsToAdd);
+            console.log(newPointTotal)
+            newPointTotal = newPointTotal.toString()
+            createLogFileForAddedPoints(pointsToAdd, whoGetsPoints, fromWhatGame)
+            console.log("Adding " + pointsToAdd + " more points to your total!"+ " New total: " + newPointTotal)
+            fs.writeFile('./textfiles/pointsFileRabid.txt', newPointTotal, 'utf8', function (err) {
                 if (err) throw err;
                 console.log('Saved!');
             })
