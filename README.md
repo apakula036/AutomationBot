@@ -24,11 +24,11 @@ Use the !help for all of the commands the bot can do!
 When the bot starts, the bot checks the weather in the area and lets me know the forecast when work ends. The bot also lets me know when work starts ane begins by messaging me in the chat. The bot will also check if a sports channel is live. 
 
 ---Manual Commands---
-!tweet: Writes a tweet using the Twitter API and Discord API to the bots twitter page. 
-!rlranks: Finds a Rocket League account and using a web scraper sends the information to the channel. 
-!playRandomSound: Using FFMPEG and discord.js the bot can play sounds to the current channel that the user is in. 
-!weather: Gives the weather like temperature wind speed and more using an API request of a location that is entered by the user. 
-!coinflip: Flips a coin gives the result with pictures.
+• !tweet: Writes a tweet using the Twitter API and Discord API to the bots twitter page. 
+• !rlranks: Finds a Rocket League account and using a web scraper sends the information to the channel. 
+• !playRandomSound: Using FFMPEG and discord.js the bot can play sounds to the current channel that the user is in. 
+• !weather: Gives the weather like temperature wind speed and more using an API request of a location that is entered by the user. 
+• !coinflip: Flips a coin gives the result with pictures.
 !meow: Sends a random cat picture using an API to the channel.
 !senddog: Sends a random dog picture using an API to the channel. 
 !notethis: Takes a message and saves it to seperate text file to be reviewed later. 
