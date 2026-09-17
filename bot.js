@@ -2,8 +2,6 @@ require("dotenv").config();
 
 var fs = require('fs');
 const puppeteer = require('puppeteer');
-//const Discord = require('discord.js');
-//const client = new Discord.Client();
 const axios = require('axios');
 const date = new Date();
 const queue = new Map();
@@ -16,18 +14,8 @@ const yttl = require('ytdl-core');
 const YTSearcher = require('ytsearcher');
 const prefix = "!";
 const ffmpegStatic = require('ffmpeg-static');
-console.log("constants are ready");
-//Twitter API Stuff
-/* Twitter stuff turned off 2/11/2025 for repair 
-var Twit = require('twit');
-const { title } = require("process");
-var T = new Twit({
-    consumer_key:         process.env.CONSUMER_KEYAPI,
-    consumer_secret:      process.env.CONSUMER_KEYAPI_SECRET,
-    access_token:         process.env.ACCESS_TOKENAPI,
-    access_token_secret:  process.env.ACCESS_TOKENAPI_SECRET,
-})
-*/
+
+
 const { Client, Events, GatewayIntentBits, AttachmentBuilder } = require('discord.js');
 const { 
     joinVoiceChannel, 
@@ -98,10 +86,10 @@ client.on('messageCreate', (message) => {
     if (!message.content.startsWith(prefix) || message.author.bot) return;
     const args = message.content.slice().trim().split(/ +/g);
     const theCommand = args.shift().toLowerCase();
-    if (message.content === "!help") {
+    if (message.content == "!help") {
         message.reply('I can do a bunch of things including play sounds! Here is a list of what I can do: ')
         message.reply('!playRandomSound, !githubQR, !islive "streamer ID here", !giveFiles, !getPokemon, !gitHubContributions, !noteThis "your note here", !rlranks "your steam ID here", !rocketLeagueTrackerHelp, !advice, !tweet "Your tweet here", !readAllTweets, !randomTweet, !rain, !senddog, !eightball, !temperatureSports, !weather "a city here", !coinFlip, !meow, !randomBetween "a number here", !balls, !affirm, and !sports'); message.react("👍");
-    } else if (theCommand === "!advice") {
+    } else if (theCommand == "!advice") {
         giveAdvice(message); 
     } else if ((message.content.startsWith("!notethis")) || (message.content.startsWith("!note")) || (message.content.startsWith("!addnote")) || (message.content.startsWith("!idea"))) {
         getReadyToSaveToTextFile(message);
@@ -124,33 +112,27 @@ client.on('messageCreate', (message) => {
         disconnectBot(message)
     } else if (message.content.startsWith("!weather")){
         giveWeather(message)
-    } else if (theCommand === "!randomnote"){
+    } else if (theCommand == "!randomnote"){
         randomNote(message);
     } else if (theCommand == "!readallnotes"){
         readAllNotes(message);
-    } else if(theCommand === "!sports"){
+    } else if(theCommand == "!sports"){
         weatherSports(message)
-    } else if(theCommand === "!temperaturesports"){
+    } else if(theCommand == "!temperaturesports"){
         temperatureSports(message)
-    } else if ((theCommand === "!coinflip") || (theCommand == "!flipacoin") || (theCommand == "!flipcoin")) {
+    } else if ((theCommand == "!coinflip") || (theCommand == "!flipacoin") || (theCommand == "!flipcoin")) {
         flipACoin(message)
-    } else if (theCommand === "!eightball") {
+    } else if (theCommand == "!eightball") {
         eightBall(message)
-    } else if (theCommand === "!meow") {
+    } else if (theCommand == "!meow") {
         message.channel.send("meow" + randomCat(message))
-    } else if(theCommand === "!getcat") {
+    } else if(theCommand == "!getcat") {
         message.reply(getCat())
-    } else if (theCommand === "!senddog") {
+    } else if (theCommand == "!senddog") {
         message.channel.send("Doggo" + randomDog(message))
     } else if (message.content.startsWith("!randombetween")){
         randomBetween(message)
-    } else if(message.content.startsWith("!tweet")){
-        getReadyForTweet(message)
-    } else if (theCommand == "!readalltweets"){
-        readAllTweets();
-    } else if (theCommand == "!randomtweet"){
-        readRandomTweet();
-    } else if(theCommand === "!rlbeef3s"){
+    } else if(theCommand == "!rlbeef3s"){
         message.reply("Working on it! Please wait a second, theres a bit going on behind the scenes because RL doesnt want to make this easy!")
         scrapeText('https://rocketleague.tracker.network/rocket-league/profile/steam/76561198010412811/overview', '//*[@id="app"]/div[2]/div[2]/div/main/div[2]/div[3]/div[1]/div/div/div[1]/div[2]/table/tbody/tr[4]/td[2]/div[2]', message)
     } else if(message.content.startsWith("!rlranks")){
@@ -218,7 +200,6 @@ function playRandom(message){
     const randomNumber = Math.floor(Math.random()* soundArray.length);
     playSong(soundArray[randomNumber], message)
 }
-
 function playRandomShort(message){
     //const randomNumber = Math.floor(Math.random()* shortSoundArray.length);
     //playSong(randomMp3, message)
@@ -243,12 +224,6 @@ fs.readdir(folderPath, (err, files) => {
     playSong(randomMp3, message)
 });
 }
-
-/* Deprecated 9/9/2026, not needed anymore, not enough short sounds to make this worth it, can be added back in if more short sounds are added
-function playRandomShort(message){
-    const randomNumber = Math.floor(Math.random()* soundArray.length);
-    playSong(shortSoundArray[randomNumber], message)
-}*/
 function eightBall(message){
     const randomNumber = Math.floor(Math.random()* eightBallArray.length);
     message.reply(eightBallArray[randomNumber])
@@ -293,7 +268,6 @@ function playSong(songName, message){
     
     message.reply("Playing...");
 };
-
 function dadBot(message){
     const args = message.content.slice().trim().split(/ +/g);
         const theCommand = args.shift();
@@ -388,7 +362,7 @@ function weatherSports(message){
             "mph. The sky is " + res.data.weather[0].main.toLowerCase()+". Dont do it.")}
     })
 }
-function giveWeather(message){//add the error log 
+function giveWeather(message){
     const args = message.content.slice().trim().split(/ +/g);
     const theCommand = args.shift().toLowerCase();
     const city = args[0];
@@ -401,17 +375,6 @@ function giveWeather(message){//add the error log
         message.reply("Uh oh! Error! Please make sure that the location is typed in correctly!");
     })
 }
-/*
-function disconnectBot(message){
-    const empty = "";
-    message.member.voice.channel.join().then(connection => {
-        // Playing the music, and, on finish, disconnecting the bot.
-        connection.play(empty).on("finish", () => 
-            connection.disconnect());
-            message.reply("Stopping...");
-    }).catch(err => 
-        console.log(err))
-}*/
 function disconnectBot(message){
     const voiceChannel = message.member.voice.channel;
     const connection = joinVoiceChannel({
@@ -462,62 +425,6 @@ function randomCat(message){
         console.error('ERR:', err)
     })
     return " "
-}
-function makeTweets(theTweet){
-    T.post('statuses/update', { status: theTweet }, function(err, data, response) {
-        saveTweetID(data.id_str, theTweet);
-        saveTweetNoID(theTweet);
-        data = " ";
-        theTweet = " ";
-    })
-}
-function saveTweetID(tweetID, theTweet){
-    fs.appendFile('./textfiles/mynewfile1.txt', "\r\n", function (err) {
-        if (err) throw err;
-    });
-    fs.appendFile('./textfiles/mynewfile1.txt', tweetID +"_"+ theTweet, function (err) {
-        if (err) throw err;
-        console.log('Saved ' + theTweet);
-    });
-}function saveTweetNoID(theTweet){
-    fs.appendFile('./textfiles/tweetsnoids.txt', "\r\n", function (err) {
-        if (err) throw err;
-    });
-    fs.appendFile('./textfiles/tweetsnoids.txt', theTweet + "_" , function (err) {
-        if (err) throw err;
-        console.log('Saved ' + theTweet + " to file tweetsNoIDs.txt");
-    });
-}
-function readRandomTweet(){
-    fs.stat('./textfiles/tweetsnoids.txt', function (error, stats) { 
-        fs.open('./textfiles/tweetsnoids.txt', "r", function (error, fd) { 
-            var buffer = new Buffer.alloc(stats.size); 
-            fs.read(fd, buffer, 0, buffer.length, 
-                null, function (error, bytesRead, buffer) { 
-                    var data = buffer.toString("utf8"); 
-                    var newArray = data.split("_");
-                    const randomNumber = Math.floor(Math.random() * newArray.length); 
-                    if(newArray[randomNumber] == ""){
-                        client.channels.cache.get(channelTwoID).send(newArray[randomNumber - 1])
-                    } else {
-                        client.channels.cache.get(channelTwoID).send(newArray[randomNumber])
-                    }
-            }); 
-        });
-    });
-}
-function readAllTweets(){//could error out after a lot of tweets, be weary itll need to be fixed maybe at some point 
-    fs.stat('./textfiles/tweetsnoids.txt', function (error, stats) { 
-        fs.open('./textfiles/tweetsnoids.txt', "r", function (error, fd) { 
-            var buffer = new Buffer.alloc(stats.size); 
-            fs.read(fd, buffer, 0, buffer.length, 
-                null, function (error, bytesRead, buffer) { 
-                    var data = buffer.toString("utf8"); 
-                    var newArray = data.split("_");
-                    client.channels.cache.get(channelTwoID).send(newArray);
-            }); 
-        });
-    });
 }
 function readAllNotes(message){
     fs.stat('./textfiles/newFile2.txt', function (error, stats) { 
@@ -618,12 +525,6 @@ function getCat(){
     })
     return " ";
 }
-// duplicate?
-function getCatFetch(){
-    axios.get("https://cat-fact.herokuapp.com")
-        .then(response => console.log(response))
-        .catch(error => console.error(error) )
-}
 function getPokemon(message){
     //console.log(message);
     const args = message.content.slice().trim().split(/ +/g);
@@ -663,16 +564,6 @@ function getReadyToSaveToTextFile(message){
     }
     client.channels.cache.get(channelTwoID).send("Saved your idea: "+ stringer + " to the bots notepad!!! (my pc thanks)")
     saveToTextFile(stringer);
-}
-function getReadyForTweet(message){
-    const args = message.content.slice().trim().split(/ +/g);
-    const theCommand = args.shift().toLowerCase();
-    var stringer = "";
-    for(i = 0; i < args.length; i++){
-        stringer = stringer + " " + args[i];
-    }
-    makeTweets(stringer); 
-    message.reply('You tweeted: '+ stringer);
 }
 function rlScrapeFunction(message){
     const id = message.content.slice().trim().split(/ +/g);
@@ -973,7 +864,7 @@ function testFunction(message){
     addPointsNoReply(string, message.author.username, "testFunction");
 }
 //seperate out the message here isolating both the reason for the points and the amount of points being added, this will be used in the addPointsNoReply function
-//needs work here
+//fix me 
 function chopMessage(message){
     const args = message.content.slice().trim().split(/ +/g);
     const theCommand = args.shift().toLowerCase();
