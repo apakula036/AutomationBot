@@ -1,5 +1,5 @@
-# description
-Automation Bot that has a lot of functionality including making  API calls to do things like send random pictures of dogs, random pictures of cats, taco recipes, and information from NASA. The bot uses Axios for the API calls and the Discord.js node module to interact with Discord.
+# General Description
+Automation Bot that has a lot of functionality including making many different API calls to do things like send random pictures of dogs, random pictures of cats, taco recipes, and information from NASA. The bot uses Axios for the API calls and the Discord.js node module to interact with Discord.
 
 ## instructions
 1. Clone the repo.
@@ -12,10 +12,9 @@ Automation Bot that has a lot of functionality including making  API calls to do
 8. Install the bot into your targeted server, this site will guide through that https://discord.com/developers/applications/select/installation.
 9. In your targeted server that you want the bot to be in, copy 3 channel IDs and insert them into the .env file. The format should be the same as before like this: ROCKETCHANNEL_ID="" GENERAL_ONEID="" GENERAL_TWOID="". These channel IDs will be the channels some designated commands sned their messages to.
 10. Create a new API key for the NASA API and add it to the .env file with NASA_APIKEY
-11. Create a new API key set for Twitter and add them to the .env file following the same format as before and name them: CONSUMER_KEYAPI, CONSUMER_KEYAPI_SECRET, ACCESS_TOKENAPI, ACCESS_TOKENAPI_SECRET.
-12. Create a new API key for the Weather App following the same format as before and name it WEATHER_API_KEY. 
-13. Run the bot.js file with node.js with this code: "node bot.js" either in VS or the CLI.
-14. The bot should now be setup and log a ready message in the console. You can uncomment out some test messages to the channels for additional testing. For a list of what the bot can do, scroll down to the available commands section. 
+11. Create a new API key for the Weather App following the same format as before and name it WEATHER_API_KEY. 
+12. Run the bot.js file with node.js with this code: "node bot.js" either in VS or the CLI.
+13. The bot should now be setup and log a ready message in the console. You can uncomment out some test messages to the channels for additional testing. For a list of what the bot can do, scroll down to the available commands section. 
 
 ### available-commands
 Use the !help for all of the commands the bot can do!
@@ -24,14 +23,13 @@ Use the !help for all of the commands the bot can do!
 When the bot starts, the bot checks the weather in the area and lets me know the forecast when work ends. The bot also lets me know when work starts ane begins by messaging me in the chat. The bot will also check if a sports channel is live. 
 
 #### Manual Commands
-- !tweet: Writes a tweet using the Twitter API and Discord API to the bots twitter page. 
 - !rlranks: Finds a Rocket League account and using a web scraper sends the information to the channel. 
 - !playRandomSound: Using FFMPEG and discord.js the bot can play sounds to the current channel that the user is in. 
 - !weather: Gives the weather like temperature wind speed and more using an API request of a location that is entered by the user. 
 - !coinflip: Flips a coin gives the result with pictures.
 - !meow: Sends a random cat picture using an API to the channel.
 - !senddog: Sends a random dog picture using an API to the channel. 
-- !notethis: Takes a message and saves it to seperate text file to be reviewed later. 
+- !notethis: Takes a message and saves it to separate text file to be reviewed later. 
 - !prs: Plays a random sound from the list of selected sounds available. 
 - !advice: Using an API request gives advice to the user. 
 - !eightball: Ask a yes or no question and the eight ball will respond. 
@@ -39,9 +37,6 @@ When the bot starts, the bot checks the weather in the area and lets me know the
 - !help: Brings up the options that the bot can do in chat.
 - !advice: Will send the user advice in chat reading a websites API to grab random advice. 
 - !nasaphoto: Sends the NASA photo of the day to the chat. 
-- !tweet "Your tweet here"
-- !readalltweets: Reads all the tweets this bot has made and sent to Twitter and sends them to chat. 
-- !randomTweet: This will read a random tweet made by the bot previously. 
 - !affirm: Reads you a random affirmation using the Affirmations API. 
 - !islive "streamer ID here": This will use Puppeteer to open twitch.tv and check if a creator is live. 
 - !givefiles: This command will give the text file that holds the notes from the !noteThis command. 
@@ -59,3 +54,6 @@ When the bot starts, the bot checks the weather in the area and lets me know the
 
 ##### future-plans 
 There are **many** possibilities with this bot. Currently, documentation needs a massive update. I plan on adding a points system to use for fun games. Document how to get this bot running automatically using a 3rd party service.
+
+##### deprecated 
+- All twitter API calls have been deprecated because Twitter(x) got rid of the free tier of API use. Can no longer tweet, read tweets, retweet, or get any information off of Twitter without paying. All code has been removed after confirming there is no free tier. 
