@@ -172,27 +172,18 @@ client.on('messageCreate', (message) => {
         slotMachine(message);
     } 
 });
-//Dad bot functionality here seperate can probably get rid of these needs test 
-client.on('messageCreate', (message) => {
-    if ( (message.author.bot == false) && (message.content.startsWith("I'm")) || (message.content.startsWith("Im")) || (message.content.startsWith("I’m")) || (message.content.startsWith("im")) || (message.content.startsWith("i'm"))){
-        dadBot(message)
-    }
-});
 //advanced dadbot
 client.on('messageCreate', (message) => {
-    if ( (message.author.bot == false) && ((message.content.startsWith("I'm")) || (message.content.startsWith("Im")) || (message.content.startsWith("I’m")) || (message.content.startsWith("im")) || (message.content.startsWith("i'm")) || (message.content.toLowerCase().includes("im")) || (message.content.toLowerCase().includes("i'm")))){
+    if ((message.author.bot == false) && ((message.content.startsWith("I'm")) || (message.content.startsWith("Im")) || (message.content.startsWith("I’m")) || (message.content.startsWith("im")) || (message.content.startsWith("i'm")))){
         dadBot(message)
+    } else if ((message.author.bot == false) && ((message.content.startsWith("ping")) || (message.content.startsWith("Ping")) || (message.content.startsWith("PING")) || (message.content.toLowerCase().includes("ping")))){
+        pingBot(message)
     }
 });
-//regular dadbot
+//Thank you
 client.on('messageCreate', (message) => {
     if ((message.author.bot == false) && (message.content.toLowerCase().startsWith("Thank you Helpfulbot")) || (message.content.toLowerCase().startsWith("Thanks HelpfulBot!")) || (message.content.toLowerCase().startsWith("Thank you Helpful Bot!")) || (message.content.toLowerCase().includes("thank you helpfulbot")) || (message.content.toLowerCase().startsWith("thank u helpfulbot"))){
         yourWelcomeBot(message)
-    }
-});
-client.on('messageCreate', (message) => {
-    if ((message.author.bot == false) && (message.content.startsWith("ping")) || (message.content.startsWith("Ping")) || (message.content.startsWith("PING")) || (message.content.toLowerCase().includes("ping"))){
-        pingBot(message)
     }
 });
 //---------------------Functions---------------------------------------------------------------------------------------------
